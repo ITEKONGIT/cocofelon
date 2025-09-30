@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technology Today - Emmanuel Awe</title>
+    <meta name="description" content="Exploring the digital landscape - from AI ethics to cybersecurity challenges in our connected world">
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="icon" href="../../assets/images/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .blog-post-page {
+            padding: 120px 0 60px;
+            min-height: 100vh;
+        }
+
+        .blog-post-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .back-to-blog {
+            margin-bottom: 3rem;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .article-title {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            color: var(--muted);
+            font-size: 1.1rem;
+            flex-wrap: wrap;
+        }
+
+        .article-author {
+            color: var(--accent-2);
+            font-weight: 600;
+        }
+
+        .article-badge {
+            padding: 0.5rem 1.5rem;
+            background: var(--accent-1);
+            color: white;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .article-content {
+            line-height: 1.8;
+            font-size: 1.15rem;
+            color: var(--muted);
+        }
+
+        .article-content h2 {
+            font-size: 2rem;
+            margin: 3rem 0 1.5rem 0;
+            color: var(--accent-2);
+            border-bottom: 1px solid rgba(124, 92, 255, 0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        .article-content h3 {
+            font-size: 1.5rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--accent-1);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .article-content em {
+            font-style: italic;
+        }
+
+        .article-content ul {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.75rem;
+            color: var(--muted);
+        }
+
+        .image-placeholder {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            text-align: center;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            font-style: italic;
+            color: var(--muted);
+            border: 2px dashed rgba(124, 92, 255, 0.3);
+        }
+
+        .conclusion {
+            font-weight: 600;
+            color: var(--accent-2);
+            font-size: 1.2rem;
+            text-align: center;
+            margin: 3rem 0;
+            padding: 2rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--accent-2);
+        }
+
+        .signature {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .article-footer {
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .medium-link {
+            color: var(--accent-1);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .medium-link:hover {
+            color: var(--accent-2);
+        }
+
+        .tech-highlight {
+            background: linear-gradient(135deg, rgba(124, 92, 255, 0.1), rgba(0, 224, 184, 0.1));
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            border-left: 4px solid var(--accent-1);
+        }
+
+        @media (max-width: 768px) {
+            .blog-post-page {
+                padding: 100px 0 40px;
+            }
+            
+            .article-title {
+                font-size: 2.2rem;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .article-content {
+                font-size: 1.1rem;
+            }
+            
+            .article-content h2 {
+                font-size: 1.7rem;
+            }
+            
+            .tech-highlight {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="container">
+            <div class="nav-inner">
+                <a href="../../index.html" class="logo">cocofelon.lol</a>
+                <div class="nav-links">
+                    <a href="../../index.html">Home</a>
+                    <a href="../../index.html#skills">Skills</a>
+                    <a href="../../index.html#projects">Projects</a>
+                    <a href="../../index.html#certifications">Certifications</a>
+                    <a href="../../blogs.html">Blog</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="blog-post-page">
+        <div class="container">
+            <div class="blog-post-content">
+                <!-- Back to Blog -->
+                <div class="back-to-blog">
+                    <a href="../../blogs.html" class="btn btn-ghost">← Back to Blog</a>
+                </div>
+
+                <!-- Article Header -->
+                <header class="article-header">
+                    <h1 class="article-title">Technology Today</h1>
+                    <div class="article-meta">
+                        <span class="article-author">by COCOFELON</span>
+                        <span>•</span>
+                        <time datetime="2025-05-15">May 15, 2025</time>
+                        <span>•</span>
+                        <span>5 min read</span>
+                    </div>
+                    <span class="article-badge">Tech Insights</span>
+                </header>
+
+                <!-- Article Content -->
+                <article class="article-content glass-card">
+                    <p>Technology has woven itself into the very fabric of our existence, transforming how we communicate, work, and dream. From the early days of clunky computers to the sleek devices that fit in our pockets, the journey has been nothing short of revolutionary.</p>
+                    
+                    <div class="tech-highlight">
+                        <p><strong>Consider the smartphone:</strong> a portal to infinite knowledge, a camera superior to anything in a professional studio just a decade ago, and a social hub that connects us across continents in seconds. Yet, beneath this glossy surface lies a complex web of algorithms, data streams, and ethical dilemmas that we often overlook in our daily swipe.</p>
+                    </div>
+
+                    <h2>The Double-Edged Sword</h2>
+                    
+                    <p>Technology empowers, but it also ensnares. Social media platforms, designed to bring us closer, frequently amplify division and misinformation. AI, our latest marvel, promises efficiency but raises specters of job displacement and biased decision-making.</p>
+                    
+                   <img 
+  src="images/cybersword.jpg" 
+  alt="Code snippet showing Windows API calls for memory manipulation"
+  width="700" 
+  height="400"
+  style="width: 100%; height: auto; border-radius: 8px; margin: 1.5rem 0;">
+                    
+                    <p>In the realm of cybersecurity, what was once a niche concern for governments now haunts every individual. Hackers exploit vulnerabilities faster than patches can be deployed, turning our connected world into a battlefield of digital espionage.</p>
+
+                    <h3>The Cybersecurity Challenge</h3>
+                    <ul>
+                        <li><strong>Rapid Vulnerability Exploitation</strong> - Attack windows shrinking from days to hours</li>
+                        <li><strong>AI-Powered Threats</strong> - Machine learning used for sophisticated social engineering</li>
+                        <li><strong>Supply Chain Attacks</strong> - Compromising trusted software dependencies</li>
+                        <li><strong>Zero-Day Markets</strong> - Underground economies for undisclosed vulnerabilities</li>
+                    </ul>
+                    
+                    <p>Yet, hope persists. Innovations in renewable energy, telemedicine, and quantum computing herald a future where technology heals as much as it disrupts. The key lies in mindful adoption—harnessing these tools not as masters, but as allies in our quest for progress.</p>
+                    
+                    <img 
+  src="images/steady-hacking.jpg" 
+  alt="Code snippet showing Windows API calls for memory manipulation"
+  width="700" 
+  height="400"
+  style="width: 100%; height: auto; border-radius: 8px; margin: 1.5rem 0;">
+                    
+                    <p>As we stand at this crossroads, one question echoes: Will we steer technology toward enlightenment or allow it to chart a course of unintended consequences? The answer, as always, rests in our hands.</p>
+                    
+                    <p class="conclusion">Reflections on our digital odyssey—may it lead us to brighter tomorrows.</p>
+                    
+                    <img 
+  src="images/security-matrix.jpg" 
+  alt="Code snippet showing Windows API calls for memory manipulation"
+  width="700" 
+  height="400"
+  style="width: 100%; height: auto; border-radius: 8px; margin: 1.5rem 0;">
+
+                    <!-- Article Footer -->
+                    <footer class="article-footer">
+                        <p>Exploring the intersection of technology, security, and human impact.</p>
+                        <a href="https://medium.com/@aweemmanuel351/technology-today-367e2aa67c7b" class="medium-link" target="_blank">Read the original post on Medium →</a>
+                    </footer>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Emmanuel Awe</h3>
+                    <p>Cybersecurity Engineer & AI Builder</p>
+                    <p class="muted">Building defensible systems, not just theory</p>
+                </div>
+                <div class="footer-links">
+                    <a href="mailto:hello@cocofelon.lol">📧 Contact</a>
+                    <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener noreferrer">💻 GitHub</a>
+                    <a href="../../index.html#certifications">📜 Certifications</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with 💝 and pure HTML/CSS/JS • cocofelon.lol</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple animation for blog content
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentElements = document.querySelectorAll('.article-content > *');
+            
+            contentElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100 + (index * 100));
+            });
+        });
+    </script>
+</body>
+</html>

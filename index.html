@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emmanuel Awe — Cybersecurity Engineer & AI Builder</title>
+    <meta name="description" content="Practical security, machine intelligence, and automation engineered for production. I build defensible systems, not just theory.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/images/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="container">
+            <div class="nav-inner">
+                <a href="#" class="logo" onclick="showSection('home')">cocofelon.lol</a>
+                <div class="nav-links">
+                    <a href="#" onclick="showSection('home')">Home</a>
+                    <a href="#" onclick="showSection('skills')">Skills</a>
+                    <a href="#" onclick="showSection('projects')">Projects</a>
+                    <a href="#" onclick="showSection('certifications')">Certifications</a>
+                    <a href="blogs.html">Blog</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <div class="hero-inner container">
+                    <div class="hero-left">
+                        <h1 class="headline">Emmanuel Awe — <span class="accent">security with intelligence</span> 🔐</h1>
+                        <p class="lead">👋 Cybersecurity engineer & AI builder — I build systems end-to-end: from lab-tested red-team simulations and AI pipelines to integrated automation that moves product and ops forward.</p>
+
+                        <div class="heart-card" data-animate="fade-up" data-delay="200">
+                            <div class="heart-header">
+                                <span class="heart-emoji">💝</span>
+                                <h3>From the Heart</h3>
+                            </div>
+                            <p id="heart-text">I design tools that find real gaps, automate repetitive work with AI, and produce developer-ready fixes that ship. Practical security engineered for production.</p>
+                        </div>
+
+                        <div class="hero-ctas">
+                            <button class="btn btn-primary" onclick="showSection('projects')">View My Projects 🚀</button>
+                            <button class="btn btn-ghost" onclick="showSection('skills')">Explore Skills</button>
+                        </div>
+                    </div>
+
+                    <div class="hero-right">
+                        <div class="glass-card preview" data-animate="fade-left" data-delay="500">
+                            <div class="stats-grid">
+                                <div class="stat">
+                                    <div class="stat-number">90%</div>
+                                    <div class="stat-label">Reduction in manual triage</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-number">50+</div>
+                                    <div class="stat-label">APIs secured</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-number">100%</div>
+                                    <div class="stat-label">Authorized testing</div>
+                                </div>
+                            </div>
+                            <p class="muted">Lab-tested simulations • AI pipelines • Production automation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Features -->
+            <div class="features container">
+                <div class="features-grid">
+                    <div class="feature-card" data-animate="fade-up" data-delay="100">
+                        <div class="feature-icon">🔍</div>
+                        <h3>API Security</h3>
+                        <p>Advanced reconnaissance, endpoint intelligence, and auth testing for modern applications.</p>
+                    </div>
+                    <div class="feature-card" data-animate="fade-up" data-delay="200">
+                        <div class="feature-icon">🤖</div>
+                        <h3>AI Automation</h3>
+                        <p>LLM-powered pipelines for lead qualification, security triage, and operational efficiency.</p>
+                    </div>
+                    <div class="feature-card" data-animate="fade-up" data-delay="300">
+                        <div class="feature-icon">🛡️</div>
+                        <h3>Threat Emulation</h3>
+                        <p>Safe adversary simulations and defensive malware analysis for detection tuning.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Preview Section -->
+            <div class="blog-preview container">
+                <div class="section-header">
+                    <h2 class="section-title">Latest Writings</h2>
+                    <p class="section-subtitle">Security insights, technical notes, and learning journeys</p>
+                </div>
+                
+                <div class="blog-preview-grid">
+                    <article class="post-card glass-card" data-animate="fade-up" onclick="window.location.href='blogs/apis-friend-or-foe/index.html'">
+                        <h3>APIs: Friend or Foe</h3>
+                        <p class="meta">April 10, 2025 • 4 min read</p>
+                        <p class="excerpt">Exploring the dual nature of APIs - from seamless data exchange to potential weaponization in cybersecurity.</p>
+                        <span class="read-more">Read more →</span>
+                    </article>
+                    
+                    <article class="post-card glass-card" data-animate="fade-up" data-delay="100" onclick="window.location.href='blogs/my-first-post/index.html'">
+                        <h3>My First Post</h3>
+                        <p class="meta">Getting started • 3 min read</p>
+                        <p class="excerpt">An introduction to my blogging journey and what to expect from this space.</p>
+                        <span class="read-more">Read more →</span>
+                    </article>
+                    
+                    <article class="post-card glass-card" data-animate="fade-up" data-delay="200" onclick="window.location.href='blogs/technology%20today/index.html'">
+                        <h3>Technology Today</h3>
+                        <p class="meta">Tech insights • 5 min read</p>
+                        <p class="excerpt">Exploring current trends and developments in the technology landscape.</p>
+                        <span class="read-more">Read more →</span>
+                    </article>
+                </div>
+                
+                <div class="center" style="margin-top: 3rem;">
+                    <a href="blogs.html" class="btn btn-primary">View All Blog Posts</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section">
+            <div class="container">
+                <h1 class="section-title">Technical Capabilities</h1>
+                <p class="section-subtitle">Comprehensive skills matrix with proven proficiency levels</p>
+
+                <div class="skills-grid">
+                    <!-- API Security -->
+                    <div class="skill-category glass-card" data-animate="fade-up">
+                        <h3>🔐 API Security & Recon</h3>
+                        <div class="skill-items">
+                            <div class="skill-item">
+                                <span class="skill-name">API surface discovery (passive + active)</span>
+                                <span class="skill-level advanced">Advanced</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Endpoint enumeration & fuzzing</span>
+                                <span class="skill-level advanced">Advanced</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Auth and access control testing</span>
+                                <span class="skill-level expert">Expert</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Postman & cURL workflow automation</span>
+                                <span class="skill-level proficient">Proficient</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Burp Suite / OWASP ZAP for API testing</span>
+                                <span class="skill-level advanced">Advanced</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Web & Mobile -->
+                    <div class="skill-category glass-card" data-animate="fade-up" data-delay="100">
+                        <h3>🌐 Web & Mobile Security</h3>
+                        <div class="skill-items">
+                            <div class="skill-item">
+                                <span class="skill-name">Dynamic web app testing</span>
+                                <span class="skill-level expert">Expert</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Mobile capture & analysis</span>
+                                <span class="skill-level advanced">Advanced</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Emulators & tooling</span>
+                                <span class="skill-level proficient">Proficient</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tooling & Automation -->
+                    <div class="skill-category glass-card" data-animate="fade-up" data-delay="200">
+                        <h3>⚙️ Tooling & Automation</h3>
+                        <div class="skill-items">
+                            <div class="skill-item">
+                                <span class="skill-name">Custom CLI recon tools</span>
+                                <span class="skill-level advanced">Advanced</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Automation stacks (Zapier + AI)</span>
+                                <span class="skill-level expert">Expert</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Reporting & triage automation</span>
+                                <span class="skill-level proficient">Proficient</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Malware Analysis -->
+                    <div class="skill-category glass-card" data-animate="fade-up" data-delay="300">
+                        <h3>🦠 Malware Analysis & Defense</h3>
+                        <div class="skill-items">
+                            <div class="skill-item">
+                                <span class="skill-name">Malware analysis in isolated lab</span>
+                                <span class="skill-level advanced">Advanced</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Threat emulation for blue teams</span>
+                                <span class="skill-level advanced">Advanced</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Research -->
+                    <div class="skill-category glass-card" data-animate="fade-up" data-delay="400">
+                        <h3>🔬 Security Research</h3>
+                        <div class="skill-items">
+                            <div class="skill-item">
+                                <span class="skill-name">CVE-style PoC preparation</span>
+                                <span class="skill-level advanced">Advanced</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Vulnerability write-ups</span>
+                                <span class="skill-level proficient">Proficient</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DevOps -->
+                    <div class="skill-category glass-card" data-animate="fade-up" data-delay="500">
+                        <h3>🔄 DevOps Integration</h3>
+                        <div class="skill-items">
+                            <div class="skill-item">
+                                <span class="skill-name">CI integration for security checks</span>
+                                <span class="skill-level proficient">Proficient</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Rate-limit aware scanning</span>
+                                <span class="skill-level advanced">Advanced</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <div class="container">
+                <h1 class="section-title">Featured Projects</h1>
+                <p class="section-subtitle">Real-world security engineering and AI automation solutions</p>
+
+                <div class="projects-grid">
+                    <!-- grAPI -->
+                    <div class="project-card glass-card" data-animate="fade-up">
+                        <div class="project-header">
+                            <h3>grAPI — Dynamic API Recon & Endpoint Intelligence</h3>
+                            <span class="project-badge">API Security</span>
+                        </div>
+                        <p class="project-description">Production-grade API reconnaissance toolkit that locates and catalogs dynamic API surfaces (REST, GraphQL, OpenAPI). Combines passive discovery with rate-limit-aware active scanning.</p>
+                        
+                        <div class="project-impact">
+                            <h4>Business Impact:</h4>
+                            <p>Consolidated API inventory reduced undocumented surface area and prioritized fixes for production teams.</p>
+                        </div>
+
+                        <div class="project-deliverables">
+                            <h4>Deliverables:</h4>
+                            <ul>
+                                <li>Redacted endpoint inventory (CSV/JSON)</li>
+                                <li>OpenAPI normalization report</li>
+                                <li>Prioritized findings matrix</li>
+                                <li>CI-ready Postman collection</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Campaign Control -->
+                    <div class="project-card glass-card" data-animate="fade-up" data-delay="100">
+                        <div class="project-header">
+                            <h3>Campaign Control Center</h3>
+                            <span class="project-badge">Training</span>
+                        </div>
+                        <p class="project-description">Consent-first phishing simulation & awareness platform with template deployment, campaign metrics, and safe credential-handling safeguards.</p>
+                        
+                        <div class="project-impact">
+                            <h4>Business Impact:</h4>
+                            <p>Improved detection and staff awareness, reducing phishing click-through rates with targeted training.</p>
+                        </div>
+
+                        <div class="project-deliverables">
+                            <h4>Deliverables:</h4>
+                            <ul>
+                                <li>Campaign analytics dashboard</li>
+                                <li>Redacted campaign templates</li>
+                                <li>Executive summary with KPIs</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- AI Marketing -->
+                    <div class="project-card glass-card" data-animate="fade-up" data-delay="200">
+                        <div class="project-header">
+                            <h3>AI Marketing Automation</h3>
+                            <span class="project-badge">AI</span>
+                        </div>
+                        <p class="project-description">End-to-end Zapier flows integrated with AI prompt templates for automatic lead qualification, CRM enrichment, and follow-up workflows.</p>
+                        
+                        <div class="project-impact">
+                            <h4>Business Impact:</h4>
+                            <p>90% reduction in lead triage time and increased conversion-ready leads for sales teams.</p>
+                        </div>
+
+                        <div class="project-deliverables">
+                            <h4>Deliverables:</h4>
+                            <ul>
+                                <li>Zap blueprints & LLM prompts</li>
+                                <li>Conversion uplift reports</li>
+                                <li>Integration readiness checklist</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Malware Lab -->
+                    <div class="project-card glass-card" data-animate="fade-up" data-delay="300">
+                        <div class="project-header">
+                            <h3>Defensive Malware Analysis Lab</h3>
+                            <span class="project-badge">Defense</span>
+                        </div>
+                        <p class="project-description">Isolated analysis lab for triage, reversing, and telemetry collection with safe emulation frameworks for EDR tuning.</p>
+                        
+                        <div class="project-impact">
+                            <h4>Business Impact:</h4>
+                            <p>Enabled blue teams to detect attacker TTPs faster and tune EDR with high-quality signals.</p>
+                        </div>
+
+                        <div class="project-deliverables">
+                            <h4>Deliverables:</h4>
+                            <ul>
+                                <li>Sanitized telemetry reports</li>
+                                <li>Detection rule suggestions</li>
+                                <li>Threat emulation results</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certifications Section -->
+        <section id="certifications" class="section">
+            <div class="container">
+                <h1 class="section-title">Certifications & Training</h1>
+                <p class="section-subtitle">Validated expertise and continuous learning</p>
+
+                <div class="certifications-grid">
+                    <div class="certification-card glass-card" data-animate="fade-up">
+                        <div class="cert-header">
+                            <h3>MCRTA - Certified Red Team Analyst</h3>
+                            <span class="cert-badge">Completed</span>
+                        </div>
+                        <p class="cert-description">Advanced red team operations and adversarial simulation training covering comprehensive attack techniques and defense evasion.</p>
+                        
+                        <div class="cert-actions">
+                            <a href="https://labs.cyberwarfare.live/credential/achievement/68d6c3d412768f4fa382ad41" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                                📜 View Certificate
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="certification-card glass-card" data-animate="fade-up" data-delay="100">
+                        <div class="cert-header">
+                            <h3>Ethical Hacking & Penetration Testing</h3>
+                            <span class="cert-badge">Advanced</span>
+                        </div>
+                        <p class="cert-description">Comprehensive offensive security training covering web app testing, network penetration, and social engineering.</p>
+                    </div>
+
+                    <div class="certification-card glass-card" data-animate="fade-up" data-delay="200">
+                        <div class="cert-header">
+                            <h3>API Security Specialist</h3>
+                            <span class="cert-badge">Expert</span>
+                        </div>
+                        <p class="cert-description">Advanced API security testing methodologies, REST/GraphQL security, and automated API reconnaissance techniques.</p>
+                    </div>
+                </div>
+
+                <!-- Ethics Statement -->
+                <div class="ethics-statement glass-card" data-animate="fade-up" data-delay="300">
+                    <h3>🔒 Ethics & Authorization</h3>
+                    <p>All testing, emulation, and research is performed under strict authorization and within scoped environments. I require written Rules of Engagement (RoE) and provide redacted artifacts for public publishing. Proof-of-concept materials are redacted for safety before any sharing.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Emmanuel Awe</h3>
+                    <p>Cybersecurity Engineer & AI Builder</p>
+                    <p class="muted">Building defensible systems, not just theory</p>
+                </div>
+                <div class="footer-links">
+                    <a href="mailto:hello@cocofelon.lol">📧 Contact</a>
+                    <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener noreferrer">💻 GitHub</a>
+                    <a href="#" onclick="showSection('certifications')">📜 Certifications</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with 💝 and pure HTML/CSS/JS • cocofelon.lol</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

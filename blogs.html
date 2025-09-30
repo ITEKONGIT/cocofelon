@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Emmanuel Awe | Cybersecurity & AI</title>
+    <meta name="description" content="Security insights, technical notes, and learning journeys from Emmanuel Awe">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/images/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Blog Page Specific Styles */
+        .blog-listing-page {
+            padding: 120px 0 60px;
+            min-height: 100vh;
+        }
+
+        .blog-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .blog-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .blog-subtitle {
+            font-size: 1.2rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .blog-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(124, 92, 255, 0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        .blog-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+
+        .blog-card-header h2 {
+            flex: 1;
+            margin: 0;
+            font-size: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .blog-card-header h2 a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .blog-card-header h2 a:hover {
+            color: var(--accent-2);
+        }
+
+        .blog-badge {
+            padding: 0.35rem 1rem;
+            background: var(--accent-1);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .blog-meta {
+            color: var(--accent-2);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .blog-excerpt {
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            flex: 1;
+        }
+
+        .blog-card-footer {
+            margin-top: auto;
+        }
+
+        .read-more-btn {
+            color: var(--accent-1);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .read-more-btn:hover {
+            color: var(--accent-2);
+            transform: translateX(4px);
+        }
+
+        .back-to-home {
+            margin-bottom: 3rem;
+        }
+
+        .blog-categories {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0 3rem;
+            flex-wrap: wrap;
+        }
+
+        .category-filter {
+            padding: 0.5rem 1.5rem;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .category-filter:hover,
+        .category-filter.active {
+            background: var(--accent-1);
+            color: white;
+            border-color: var(--accent-1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--muted);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .blog-listing-page {
+                padding: 100px 0 40px;
+            }
+            
+            .blog-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .blog-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .blog-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .blog-categories {
+                gap: 0.5rem;
+            }
+            
+            .category-filter {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="container">
+            <div class="nav-inner">
+                <a href="index.html" class="logo">cocofelon.lol</a>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#skills">Skills</a>
+                    <a href="index.html#projects">Projects</a>
+                    <a href="index.html#certifications">Certifications</a>
+                    <a href="blogs.html" style="color: var(--accent-2);">Blog</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="blog-listing-page">
+        <div class="container">
+            <!-- Back to Home -->
+            <div class="back-to-home">
+                <a href="index.html" class="btn btn-ghost">← Back to Home</a>
+            </div>
+
+            <!-- Blog Header -->
+            <div class="blog-header">
+                <h1>Blog & Writings</h1>
+                <p class="blog-subtitle">Security insights, technical deep dives, and learning journeys from the frontlines of cybersecurity</p>
+            </div>
+
+            <!-- Category Filters -->
+           <div class="blog-categories">
+    <a href="#" class="category-filter active" data-category="all">All Posts</a>
+    <a href="#" class="category-filter" data-category="security">Security</a>
+    <a href="#" class="category-filter" data-category="api">API Security</a>
+    <a href="#" class="category-filter" data-category="technology">Technology</a>
+    <a href="#" class="category-filter" data-category="introduction">Introduction</a>
+</div>
+
+
+<div class="blog-grid" id="blogGrid">
+    <!-- My First Post -->
+    <article class="blog-card glass-card" data-animate="fade-up" data-category="introduction">
+        <div class="blog-card-header">
+            <h2><a href="blogs/my-first-post/index.html">My First Post</a></h2>
+            <span class="blog-badge">Introduction</span>
+        </div>
+        <p class="blog-meta">Getting Started • 3 min read</p>
+        <p class="blog-excerpt">An introduction to my blogging journey and what to expect from this space.</p>
+        <div class="blog-card-footer">
+            <a href="blogs/my-first-post/index.html" class="read-more-btn">Read Article →</a>
+        </div>
+    </article>
+
+    <!-- Technology Today -->
+    <article class="blog-card glass-card" data-animate="fade-up" data-delay="100" data-category="technology">
+        <div class="blog-card-header">
+            <h2><a href="blogs/technology%20today/index.html">Technology Today</a></h2>
+            <span class="blog-badge">Tech Insights</span>
+        </div>
+        <p class="blog-meta">Latest Trends • 5 min read</p>
+        <p class="blog-excerpt">Exploring current trends and developments in the technology landscape.</p>
+        <div class="blog-card-footer">
+            <a href="blogs/technology%20today/index.html" class="read-more-btn">Read Article →</a>
+        </div>
+    </article>
+
+    <!-- APIs: Friend or Foe (Your new post) -->
+<article class="blog-card glass-card" data-animate="fade-up" data-category="security,api">
+    <div class="blog-card-header">
+        <h2><a href="blogs/apis-friend-or-foe/index.html">APIs: Friend or Foe</a></h2>
+        <span class="blog-badge">API Security</span>
+    </div>
+    <p class="blog-meta">April 10, 2025 • 4 min read</p>
+    <p class="blog-excerpt">Exploring the dual nature of APIs - from seamless data exchange to potential weaponization in cybersecurity. A deep dive into Windows API, memory manipulation, and API hooking techniques.</p>
+    <div class="blog-card-footer">
+        <a href="blogs/apis-friend-or-foe/index.html" class="read-more-btn">Read Article →</a>
+    </div>
+</article>
+</div>
+
+            <!-- Empty State (for filtered views) -->
+            <div class="empty-state glass-card" id="emptyState" style="display: none;">
+                <div class="icon">🔍</div>
+                <h3>No posts found</h3>
+                <p>Try selecting a different category or check back later for new content.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Emmanuel Awe</h3>
+                    <p>Cybersecurity Engineer & AI Builder</p>
+                    <p class="muted">Building defensible systems, not just theory</p>
+                </div>
+                <div class="footer-links">
+                    <a href="mailto:hello@cocofelon.lol">📧 Contact</a>
+                    <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener noreferrer">💻 GitHub</a>
+                    <a href="index.html#certifications">📜 Certifications</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with 💝 and pure HTML/CSS/JS • cocofelon.lol</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Blog Filtering Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryFilters = document.querySelectorAll('.category-filter');
+            const blogCards = document.querySelectorAll('.blog-card');
+            const emptyState = document.getElementById('emptyState');
+            const blogGrid = document.getElementById('blogGrid');
+
+            // Category filter click handler
+            categoryFilters.forEach(filter => {
+                filter.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all filters
+                    categoryFilters.forEach(f => f.classList.remove('active'));
+                    
+                    // Add active class to clicked filter
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    filterBlogs(category);
+                });
+            });
+
+            // Filter blogs by category
+            function filterBlogs(category) {
+                let visibleCount = 0;
+                
+                blogCards.forEach(card => {
+                    const cardCategories = card.getAttribute('data-category').split(',');
+                    
+                    if (category === 'all' || cardCategories.includes(category)) {
+                        card.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Show empty state if no posts match
+                if (visibleCount === 0) {
+                    emptyState.style.display = 'block';
+                    blogGrid.style.display = 'none';
+                } else {
+                    emptyState.style.display = 'none';
+                    blogGrid.style.display = 'grid';
+                }
+
+                // Re-initialize animations for visible cards
+                initAnimations();
+            }
+
+            // Animation on scroll (same as main site)
+            function initAnimations() {
+                const animatedElements = document.querySelectorAll('[data-animate]');
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const delay = entry.target.getAttribute('data-delay') || 0;
+                            setTimeout(() => {
+                                entry.target.classList.add('animated');
+                            }, delay);
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                animatedElements.forEach(el => {
+                    if (el.style.display !== 'none') {
+                        observer.observe(el);
+                    }
+                });
+            }
+
+            // Initialize animations on page load
+            initAnimations();
+
+            // Add hover effects for blog cards
+            blogCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px)';
+                    this.style.borderColor = 'rgba(124, 92, 255, 0.3)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.borderColor = 'rgba(255,255,255,0.08)';
+                });
+            });
+
+            console.log('📝 Blog page loaded successfully!');
+        });
+    </script>
+</body>
+</html>
