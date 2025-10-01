@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT Techniques for Web, API, Cloud, and Mobile - Emmanuel Awe</title>
+    <meta name="description" content="Practical OSINT techniques for penetration testing across web, API, cloud, and mobile domains">
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="icon" href="../../codemechanic.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .blog-post-page {
+            padding: 120px 0 60px;
+            min-height: 100vh;
+        }
+
+        .blog-post-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .back-to-blog {
+            margin-bottom: 3rem;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .article-title {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            color: var(--muted);
+            font-size: 1.1rem;
+            flex-wrap: wrap;
+        }
+
+        .article-author {
+            color: var(--accent-2);
+            font-weight: 600;
+        }
+
+        .article-badge {
+            padding: 0.5rem 1.5rem;
+            background: var(--accent-1);
+            color: white;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .article-content {
+            line-height: 1.8;
+            font-size: 1.15rem;
+            color: var(--muted);
+        }
+
+        .article-content h2 {
+            font-size: 2rem;
+            margin: 3rem 0 1.5rem 0;
+            color: var(--accent-2);
+            border-bottom: 1px solid rgba(124, 92, 255, 0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        .article-content h3 {
+            font-size: 1.5rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--accent-1);
+        }
+
+        .article-content h4 {
+            font-size: 1.25rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .article-content em {
+            font-style: italic;
+        }
+
+        .article-content ul, .article-content ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.75rem;
+            color: var(--muted);
+        }
+
+        .ethics-note {
+            background: linear-gradient(135deg, rgba(255, 110, 199, 0.1), rgba(124, 92, 255, 0.1));
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            border-left: 4px solid var(--glow);
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: var(--accent-2);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .technique-card {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid rgba(124, 92, 255, 0.2);
+        }
+
+        .technique-card h4 {
+            color: var(--accent-1);
+            margin-bottom: 1rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(255,255,255,0.03);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: rgba(124, 92, 255, 0.2);
+            color: var(--text);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: var(--muted);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .cheat-sheet {
+            background: linear-gradient(135deg, rgba(0, 224, 184, 0.1), rgba(124, 92, 255, 0.1));
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+        }
+
+        .key-point {
+            background: rgba(255,255,255,0.03);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--accent-2);
+        }
+
+        @media (max-width: 768px) {
+            .blog-post-page {
+                padding: 100px 0 40px;
+            }
+            
+            .article-title {
+                font-size: 2.2rem;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .article-content {
+                font-size: 1.1rem;
+            }
+            
+            .article-content h2 {
+                font-size: 1.7rem;
+            }
+            
+            .technique-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                font-size: 0.9rem;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="container">
+            <div class="nav-inner">
+                <a href="../../index.html" class="logo">cocofelon.lol</a>
+                <div class="nav-links">
+                    <a href="../../index.html">Home</a>
+                    <a href="../../index.html#skills">Skills</a>
+                    <a href="../../index.html#projects">Projects</a>
+                    <a href="../../index.html#certifications">Certifications</a>
+                    <a href="../../blogs.html">Blog</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="blog-post-page">
+        <div class="container">
+            <div class="blog-post-content">
+                <!-- Back to Blog -->
+                <div class="back-to-blog">
+                    <a href="../../blogs.html" class="btn btn-ghost">← Back to Blog</a>
+                </div>
+
+                <!-- Article Header -->
+                <header class="article-header">
+                    <h1 class="article-title">OSINT Techniques for Web, API, Cloud, and Mobile Penetration Testing</h1>
+                    <div class="article-meta">
+                        <span class="article-author">by COCOFELON</span>
+                        <span>•</span>
+                        <time datetime="2024-12-01">December 1, 2024</time>
+                        <span>•</span>
+                        <span>15 min read</span>
+                    </div>
+                    <span class="article-badge">Security Research</span>
+                </header>
+
+                <!-- Article Content -->
+                <article class="article-content glass-card">
+                    <div class="ethics-note">
+                        <p><strong>Quick ethics note</strong> (because we're grownups): OSINT is a scalpel, not a sledgehammer. Use it only on engagements you're authorized for (Rules of Engagement signed, scope defined, coffee brewed). Unauthorized probing = drama + felony. Now that we agreed to be lawful, onward.</p>
+                    </div>
+
+                    <h2>1. Introduction — What OSINT Actually Buys You (Besides Bragging Rights)</h2>
+                    <p>Open-Source Intelligence (OSINT) is the disciplined collection, enrichment, and analysis of publicly available signals so you can build a realistic attack surface model before you touch an exploit. Across web, API, cloud, and mobile, the philosophy is identical: find everything the target didn't intend to expose, prioritize what's actionable, and map that to risk. The tactics and data shapes change—so you bring different tools and mental models to each domain.</p>
+
+                    <h2>2. Web OSINT — The Classic Reconnaissance Buffet</h2>
+                    <p><strong>Goal:</strong> find pages, assets, config files, forgotten admin portals, and credentials that were posted to the internet as if by accident.</p>
+
+                    <h3>Techniques & Tools</h3>
+                    <div class="technique-grid">
+                        <div class="technique-card">
+                            <h4>Search Operators / Dorking</h4>
+                            <p><code>site:example.com inurl:env "DB_PASSWORD"</code> — rapid way to find leak patterns.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Archive Crawling</h4>
+                            <p>Wayback Machine + waybackurls + gau to find historical files and endpoints that may still be accessible.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Repo Leakage</h4>
+                            <p>GitHub + gitrob/truffleHog/gitleaks to scan public repos for keys, secrets, and config files.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Subdomain & DNS Enumeration</h4>
+                            <p>subfinder, amass, dnsdumpster, passive DNS (SecurityTrails). Combine results, then probe with httpx/naabu.</p>
+                        </div>
+                    </div>
+
+                    <h3>Example Commands (Lab-Friendly)</h3>
+                    <div class="code-block">
+                        <code># mass-harvest URLs from wayback + live-check<br>
+waybackurls example.com | tee wayback-urls.txt<br>
+cat wayback-urls.txt | httpx -status -o alive-urls.txt<br><br>
+# quick git leakage scan (local clone required)<br>
+gitleaks detect --source=/path/to/repo --report=gitleaks-report.json</code>
+                    </div>
+
+                    <div class="key-point">
+                        <p><strong>What you typically find:</strong> credentials, old API endpoints, forgotten admin interfaces, misconfigured CORS, and files intended for devops but left public.</p>
+                        <p><strong>Defense notes:</strong> monitor for exposed keywords in public repos, block .env and .git via robots/ACLs, rotate creds discovered in CI logs, and monitor Cloudflare/hosting for new subdomains.</p>
+                    </div>
+
+                    <h2>3. API OSINT — The Soap Opera of Endpoints, Tokens, and Weird Headers</h2>
+                    <p><strong>Goal:</strong> discover endpoints, understand auth models, and locate tokens, documentation, or parameter behavior that reveal misconfigurations or privilege gaps.</p>
+
+                    <h3>Techniques & Tools</h3>
+                    <div class="technique-grid">
+                        <div class="technique-card">
+                            <h4>API Discovery</h4>
+                            <p>Harvest OpenAPI/Swagger files, Postman collections, and developer docs (GitHub, dev portals, SDKs). Tools: swagger-cli, openapi-grabber.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Intercept & Replay</h4>
+                            <p>Burp Suite/OWASP ZAP/Postman + extensions to view live traffic, extract bearer tokens, cookie flags, and dangerous headers.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Parameter Fuzzing</h4>
+                            <p>ffuf, fuzzapi, or Burp Intruder to push unexpected input and trigger verbose error messages revealing stack traces or hidden endpoints.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Static Discovery in Code</h4>
+                            <p>grep for apiKey, Authorization: Bearer, or fetch('https://api.example.com') in public repos, SDKs, or mobile app source.</p>
+                        </div>
+                    </div>
+
+                    <h3>Lab Example (Intercepting a Token)</h3>
+                    <ol>
+                        <li>Configure Burp as proxy</li>
+                        <li>Trigger a client action that calls an API endpoint</li>
+                        <li>Inspect Authorization header or JSON body for tokens; test token replay against other endpoints</li>
+                    </ol>
+
+                    <div class="key-point">
+                        <p><strong>What you typically find:</strong> weak auth flows, tokens with too-broad scopes, predictable pagination that leaks records, and excessive trust in client-side input.</p>
+                        <p><strong>Defense notes:</strong> enforce least-privilege tokens, token rotation, strict CORS, robust rate limiting, input validation, and central API gateway logging.</p>
+                    </div>
+
+                    <h2>4. Cloud OSINT — Where an ls Can Become a Full-Blown Identity Crisis</h2>
+                    <p><strong>Goal:</strong> find misconfigured buckets, exposed metadata endpoints, weak IAM policies, and anything that turns public files into living credentials.</p>
+
+                    <h3>Techniques & Tools</h3>
+                    <div class="technique-grid">
+                        <div class="technique-card">
+                            <h4>Bucket Enumeration</h4>
+                            <p>aws s3 ls (public), s3scanner, bucket_finder or gcloud equivalents. Look for public ACLs or listable buckets.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Metadata Harvesting</h4>
+                            <p>SSRF → IMDS calls (EC2 IMDSv1/v2 nuances), check for exposed cloud metadata via misconfigured endpoints.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>IAM Mapping</h4>
+                            <p>Collect service principal names, role ARNs, and attached policies; use aws iam get-role (when authorized) or infer from exposed artifacts.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Automated Enumeration</h4>
+                            <p>cloud_enum.py, custom scripts to test S3, GCS, Azure Blob permissions, and enumerate publicly reachable resources.</p>
+                        </div>
+                    </div>
+
+                    <h3>Example Scenario</h3>
+                    <p>SSRF from a web app fetching <code>http://169.254.169.254/latest/meta-data/iam/security-credentials/</code> → temporary credentials returned → use <code>aws sts get-caller-identity</code> to enumerate privileges.</p>
+
+                    <div class="key-point">
+                        <p><strong>What you typically find:</strong> public buckets with PII, long-lived keys in repos, permissive IAM roles attached to compute instances, and overly broad policies like s3:* or iam:PassRole.</p>
+                        <p><strong>Defense notes:</strong> enforce IMDSv2, require MFA for privilege escalation paths, least-privilege IAM, block public bucket listing, enable bucket-level logging and object versioning, and use monitoring/alarms for unusual API calls.</p>
+                    </div>
+
+                    <h2>5. Mobile OSINT — APKs, Plist, and the Glorious Reveal of Hardcoded Secrets</h2>
+                    <p><strong>Goal:</strong> decompile apps, harvest embedded API keys and endpoints, and analyze network behavior for weak crypto or insecure patterns.</p>
+
+                    <h3>Techniques & Tools</h3>
+                    <div class="technique-grid">
+                        <div class="technique-card">
+                            <h4>Static Analysis</h4>
+                            <p>apktool, jadx, class-dump for iOS, scan binaries for strings like api_key, secret, or https://api.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Dynamic Analysis</h4>
+                            <p>Set up Burp/mitmproxy with a test device or emulator, install custom CA cert (if allowed) and inspect requests/responses.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Configuration Review</h4>
+                            <p>Analyze AndroidManifest.xml and iOS entitlements, check for exported components (exported=true) or weak allowBackup flags.</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Reverse Engineering</h4>
+                            <p>Find logic that constructs auth tokens client-side, insecure token storage (SharedPreferences without encryption), or debug endpoints left in release builds.</p>
+                        </div>
+                    </div>
+
+                    <h3>Typical Commands</h3>
+                    <div class="code-block">
+                        <code># decompile APK<br>
+apktool d app-release.apk -o app_src<br>
+# view Decompiled java/x86 smali<br>
+jadx -d jadx_out app-release.apk</code>
+                    </div>
+
+                    <div class="key-point">
+                        <p><strong>What you typically find:</strong> hardcoded API keys, insecure certificate pinning (or none at all), debug endpoints, and secrets stored without encryption.</p>
+                        <p><strong>Defense notes:</strong> avoid shipping keys in binaries, use secure storage (Keychain/Keystore), implement proper certificate pinning, and remove debug backdoors before release.</p>
+                    </div>
+
+                    <h2>6. Cross-Domain Similarities</h2>
+                    <p>So you can be lazy and reuse good patterns:</p>
+                    <ul>
+                        <li><strong>Recon discipline:</strong> all domains reward automation and chaining small findings into a bigger picture.</li>
+                        <li><strong>Scripting is your friend:</strong> build parsers that normalize results into one format (jq, python, pandas) so you can triage faster.</li>
+                        <li><strong>Actionability > volume:</strong> millions of URLs are fun to collect; a single usable credential is what pays the bills.</li>
+                        <li><strong>Logging & detection:</strong> anything that produces credentials should be covered by detection (SIEM alerts, anomaly detection).</li>
+                    </ul>
+
+                    <h2>7. Quick Cheat-Sheet</h2>
+                    <div class="cheat-sheet">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Domain</th>
+                                    <th>First Tools to Run</th>
+                                    <th>Quick Win to Look For</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Web</strong></td>
+                                    <td>amass, waybackurls, httpx, gitleaks</td>
+                                    <td>.env, /admin, .git</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>API</strong></td>
+                                    <td>Burp, openapi-grabber, ffuf</td>
+                                    <td>exposed swagger, bearer token reuse</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Cloud</strong></td>
+                                    <td>s3scanner, passive DNS, cloud_enum.py</td>
+                                    <td>public buckets, SSRF → IMDS</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mobile</strong></td>
+                                    <td>apktool, jadx, mitmproxy</td>
+                                    <td>hardcoded keys, debug endpoints</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>8. Closing (Practical Takeaways)</h2>
+                    <p>OSINT is the art of turning noise into vectors. Be methodical, automate what's repetitive, and focus on what moves the box (tokens, credentials, IAM roles). Keep proof-of-concept steps minimal and non-destructive, and always recommend remediation (rotate keys, lock buckets, tighten policies). Also — compliment your work with logging rules so defenders can spot the same reconnaissance the next time.</p>
+
+                    <!-- Comparative Analysis Section -->
+                    <h2>Comparative Analysis: Cloud Pentesting vs Web, API, and Mobile</h2>
+                    <p><em>More Meat, Less Flair</em></p>
+
+                    <h3>1. Intro — Short Version</h3>
+                    <p>Cloud pentesting is different because identity = access. In web/API/mobile, you often snag data; in cloud, a single misconfiguration can hand over an identity that actually controls the infrastructure. That's why cloud OSINT has exponentially higher strategic impact.</p>
+
+                    <h3>2. Methodology Differences</h3>
+                    <div class="technique-grid">
+                        <div class="technique-card">
+                            <h4>Cloud Pentest</h4>
+                            <p><strong>Primary vectors:</strong> object storage, metadata endpoints, IAM roles/policies, serverless functions</p>
+                            <p><strong>Impact:</strong> Live credentials and role assumptions leading to infrastructure control</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Web Pentest</h4>
+                            <p><strong>Primary vectors:</strong> exposed files, directories, subdomains, backup artifacts</p>
+                            <p><strong>Impact:</strong> Data exposure, rarely immediate cloud-level control</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>API Pentest</h4>
+                            <p><strong>Primary vectors:</strong> authentication flaws, token leakage, endpoint logic flaws</p>
+                            <p><strong>Impact:</strong> Scoped access, authorization bypass if tokens are privileged</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Mobile Pentest</h4>
+                            <p><strong>Primary vectors:</strong> embedded secrets, weak local storage, insecure network calls</p>
+                            <p><strong>Impact:</strong> Data exposure or user account compromise</p>
+                        </div>
+                    </div>
+
+                    <h3>5. Practical Comparison Matrix</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>Web</th>
+                                <th>API</th>
+                                <th>Cloud</th>
+                                <th>Mobile</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Primary Artifacts</strong></td>
+                                <td>HTML, JS, backups</td>
+                                <td>JSON, tokens, headers</td>
+                                <td>Buckets, roles, metadata</td>
+                                <td>APK/IPA, local storage</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Typical Outcome</strong></td>
+                                <td>Data exposure, pages</td>
+                                <td>Scoped access, logic flaws</td>
+                                <td>Live creds, privilege escalation</td>
+                                <td>App secrets, compromised users</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Attack Speed</strong></td>
+                                <td>Medium</td>
+                                <td>Fast</td>
+                                <td>Fast → explosive</td>
+                                <td>Slow (decompilation)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Detection Signals</strong></td>
+                                <td>Web logs, WAF alerts</td>
+                                <td>API gateway logs</td>
+                                <td>CloudTrail, CloudWatch, Audit logs</td>
+                                <td>Mobile analytics, app logs</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>6. Recommendations for Defenders</h3>
+                    <div class="technique-grid">
+                        <div class="technique-card">
+                            <h4>Cloud</h4>
+                            <p>Enforce IMDSv2, least-privilege IAM, enable CloudTrail + alerts, disallow public listable buckets</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>API</h4>
+                            <p>Centralize auth at API Gateway, token scoping, strong rate limiting, validate JWT claims server-side</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Web</h4>
+                            <p>CI/CD hygiene, proper robots.txt and server configs, remove debug artifacts, monitor archives</p>
+                        </div>
+                        <div class="technique-card">
+                            <h4>Mobile</h4>
+                            <p>Avoid hardcoded keys, use Keychain/Keystore, enforce pinning, remove debug modes</p>
+                        </div>
+                    </div>
+
+                    <h3>7. Closing Thought — Playing the Long Game</h3>
+                    <p>Cloud pentesting requires a slightly different mindset: think identity graphs and trust boundaries rather than just files and endpoints. Web/API/mobile OSINT often leaves you with intelligence and screenshots. Cloud OSINT can leave you with credentials that actually move bits and bytes in production. Prioritize detection and least-privilege, and treat any public artifact as "sensitive until proven otherwise."</p>
+
+                    <!-- Article Footer -->
+                    <footer class="article-footer">
+                        <p>Practical security insights for modern penetration testing and defense.</p>
+                        <p><em>Stay curious, stay authorized.</em></p>
+                    </footer>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Emmanuel Awe</h3>
+                    <p>Cybersecurity Engineer & AI Builder</p>
+                    <p class="muted">Building defensible systems, not just theory</p>
+                </div>
+                <div class="footer-links">
+                    <a href="mailto:hello@cocofelon.lol">📧 Contact</a>
+                    <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener noreferrer">💻 GitHub</a>
+                    <a href="../../index.html#certifications">📜 Certifications</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with 💝 and pure HTML/CSS/JS • cocofelon.lol</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Animation for content elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentElements = document.querySelectorAll('.article-content > *');
+            
+            contentElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100 + (index * 50));
+            });
+
+            // Add copy functionality to code blocks
+            const codeBlocks = document.querySelectorAll('.code-block');
+            codeBlocks.forEach(block => {
+                block.style.position = 'relative';
+                block.addEventListener('click', function() {
+                    const code = this.querySelector('code').textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        const originalText = this.querySelector('code').textContent;
+                        this.querySelector('code').textContent = 'Copied to clipboard!';
+                        setTimeout(() => {
+                            this.querySelector('code').textContent = originalText;
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

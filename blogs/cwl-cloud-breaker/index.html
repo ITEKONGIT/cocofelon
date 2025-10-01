@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CWL Cloud Breaker - SSRF to EC2 Role Impact - Emmanuel Awe</title>
+    <meta name="description" content="Redacted full-depth lab report: SSRF vulnerability leading to EC2 role compromise in cloud environment">
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="icon" href="../../codemechanic.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .blog-post-page {
+            padding: 120px 0 60px;
+            min-height: 100vh;
+        }
+
+        .blog-post-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .back-to-blog {
+            margin-bottom: 3rem;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .article-title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            color: var(--muted);
+            font-size: 1.1rem;
+            flex-wrap: wrap;
+        }
+
+        .article-author {
+            color: var(--accent-2);
+            font-weight: 600;
+        }
+
+        .article-badge {
+            padding: 0.5rem 1.5rem;
+            background: var(--accent-1);
+            color: white;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .article-content {
+            line-height: 1.8;
+            font-size: 1.15rem;
+            color: var(--muted);
+        }
+
+        .article-content h2 {
+            font-size: 2rem;
+            margin: 3rem 0 1.5rem 0;
+            color: var(--accent-2);
+            border-bottom: 1px solid rgba(124, 92, 255, 0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        .article-content h3 {
+            font-size: 1.5rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--accent-1);
+        }
+
+        .article-content h4 {
+            font-size: 1.25rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .article-content em {
+            font-style: italic;
+        }
+
+        .article-content ul, .article-content ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.75rem;
+            color: var(--muted);
+        }
+
+        .executive-summary {
+            background: linear-gradient(135deg, rgba(0, 224, 184, 0.1), rgba(124, 92, 255, 0.1));
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            border-left: 4px solid var(--accent-2);
+        }
+
+        .lab-context {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            border: 1px solid rgba(124, 92, 255, 0.2);
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: var(--accent-2);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .redacted {
+            background: rgba(255, 110, 199, 0.2);
+            color: transparent;
+            border-radius: 3px;
+            padding: 0 4px;
+        }
+
+        .redacted::selection {
+            background: transparent;
+        }
+
+        .risk-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(255,255,255,0.03);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .risk-matrix th {
+            background: rgba(124, 92, 255, 0.2);
+            color: var(--text);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .risk-matrix td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: var(--muted);
+        }
+
+        .risk-matrix tr:last-child td {
+            border-bottom: none;
+        }
+
+        .severity-critical { color: #ff6ec7; font-weight: 600; }
+        .severity-high { color: #ff6ec7; font-weight: 600; }
+        .severity-medium { color: var(--accent-1); font-weight: 600; }
+        .severity-low { color: var(--accent-2); font-weight: 600; }
+
+        .remediation-priority {
+            background: rgba(255,255,255,0.03);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--accent-2);
+        }
+
+        .toc {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+        }
+
+        .toc ul {
+            columns: 2;
+            column-gap: 2rem;
+        }
+
+        .toc li {
+            break-inside: avoid;
+        }
+
+        @media (max-width: 768px) {
+            .blog-post-page {
+                padding: 100px 0 40px;
+            }
+            
+            .article-title {
+                font-size: 2rem;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .article-content {
+                font-size: 1.1rem;
+            }
+            
+            .article-content h2 {
+                font-size: 1.7rem;
+            }
+            
+            .toc ul {
+                columns: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="container">
+            <div class="nav-inner">
+                <a href="../../index.html" class="logo">cocofelon.lol</a>
+                <div class="nav-links">
+                    <a href="../../index.html">Home</a>
+                    <a href="../../index.html#skills">Skills</a>
+                    <a href="../../index.html#projects">Projects</a>
+                    <a href="../../index.html#certifications">Certifications</a>
+                    <a href="../../blogs.html">Blog</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="blog-post-page">
+        <div class="container">
+            <div class="blog-post-content">
+                <!-- Back to Blog -->
+                <div class="back-to-blog">
+                    <a href="../../blogs.html" class="btn btn-ghost">← Back to Blog</a>
+                </div>
+
+                <!-- Article Header -->
+                <header class="article-header">
+                    <h1 class="article-title">CWL Cloud Breaker — SSRF → EC2 Role Impact</h1>
+                    <div class="article-meta">
+                        <span class="article-author">by COCOFELON</span>
+                        <span>•</span>
+                        <time datetime="2024-12-15">December 15, 2024</time>
+                        <span>•</span>
+                        <span>12 min read</span>
+                    </div>
+                    <span class="article-badge">Cloud Security</span>
+                </header>
+
+                <!-- Article Content -->
+                <article class="article-content glass-card">
+                    <div class="executive-summary">
+                        <p><strong>Executive summary (short & tasty):</strong> I hacked a cloud service where a vulnerable EC2-hosted web app with a server-side fetch feature exposed the instance metadata surface via SSRF, allowing temporary IAM role credentials to be disclosed. The chain illustrates how a tiny input-validation slip can become a catastrophic cloud identity compromise.</p>
+                        <p>This document covers: reconnaissance, enumeration, exploitation characterization (redacted), credential validation (redacted), pivot scenarios (conceptual), detection opportunities, remediation playbook, and a prioritized hardening checklist. All live identifiers are replaced with <span class="redacted">REDACTED_*</span> tokens.</p>
+                    </div>
+
+                    <div class="lab-context">
+                        <h4>Lab Context & Safety Posture</h4>
+                        <ul>
+                            <li><strong>Environment:</strong> Isolated lab account / sandbox provided by CyberWarFare Labs</li>
+                            <li><strong>Scope:</strong> Single EC2 instance + attached IAM role; no production systems touched</li>
+                            <li><strong>Controls:</strong> Logging enabled, ephemeral resources, pre-agreed rollback plan</li>
+                            <li><strong>Redaction policy:</strong> All IPs, account IDs, role names, secret material and precise metadata addresses replaced with <span class="redacted">REDACTED_*</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="toc">
+                        <h3>Table of Contents</h3>
+                        <ul>
+                            <li>1) Reconnaissance — S3, Wayback, GitHub</li>
+                            <li>2) Discovery — IP scanning, header fingerprinting</li>
+                            <li>3) Application analysis — forms, params, behaviors</li>
+                            <li>4) SSRF characterization — safe validation approach</li>
+                            <li>5) Credential extraction — redacted artifact description</li>
+                            <li>6) Post-exploitation verification</li>
+                            <li>7) Blast radius & pivot strategies</li>
+                            <li>8) Detection playbook</li>
+                            <li>9) Remediation & hardening</li>
+                            <li>10) Tactical defensive templates</li>
+                            <li>11) Lab replication guidance</li>
+                            <li>12) Incident response checklist</li>
+                            <li>13) Timeline & artifact catalog</li>
+                            <li>14) Lessons learned</li>
+                        </ul>
+                    </div>
+
+                    <h2>1) Reconnaissance — Starting with Low-Hanging Fruit</h2>
+                    <p><strong>Goals:</strong> find public storage, historical artifacts, and repo leakage that point to endpoints or keys.</p>
+                    
+                    <h4>Actions (redacted / conceptual):</h4>
+                    <ul>
+                        <li>S3-style probing of common bucket naming patterns: results returned <span class="redacted">HTTP_STATUS_NOT_FOUND</span> for the tested names</li>
+                        <li>Attempted Wayback/archival harvesting — tooling absent in the specific lab VM; method noted for future runs</li>
+                        <li>GitHub OSINT: discovered <span class="redacted">https://github.com/REDACTED_ORG/REDACTED_REPO</span> containing cloud service account artifacts — for a different provider (non-AWS)</li>
+                    </ul>
+
+                    <div class="remediation-priority">
+                        <p><strong>Notes & Analysis:</strong> Multi-cloud leakage is a real foot-gun; finding keys for a different cloud often indicates engineering hygiene issues and could enable lateral pivot in cross-cloud setups. No public buckets were found for standard name patterns, so we pivoted to host discovery.</p>
+                    </div>
+
+                    <h2>2) Discovery — Find the Running Asset (IP-based)</h2>
+                    <p><strong>Method:</strong> iterate lab subnet, perform HTTP/host checks (non-destructive), and fingerprint the web service headers.</p>
+                    
+                    <h4>Findings (redacted):</h4>
+                    <ul>
+                        <li>A host responded at <span class="redacted">REDACTED_IP</span> with HTTP 200 and server signature resembling Apache/<span class="redacted">REDACTED_VER</span> (Ubuntu)</li>
+                        <li>Additional headers indicated typical LAMP stack responses; webroot served a simple app UI</li>
+                    </ul>
+
+                    <p><strong>Verification of hosting provider (redacted):</strong> Whois/ASN lookup mapping confirmed the IP was allocated to <span class="redacted">REDACTED_CLOUD_PROVIDER</span>. This validated an EC2-hosted hypothesis and focused the cloud pivot analysis.</p>
+
+                    <h2>3) Application Analysis — The Juicy Artifact: update.html + process.php</h2>
+                    <p><strong>Observed assets (redacted):</strong></p>
+                    <ul>
+                        <li><span class="redacted">http://REDACTED_IP/update.html</span> — contained a form with fields: url, date, ip, organization</li>
+                        <li>Form POSTs were handled by process.php (server-side script). App echoing/processing behavior suggested server-side retrieval of user-supplied ip/url content</li>
+                    </ul>
+
+                    <div class="remediation-priority">
+                        <p><strong>Important observation:</strong> The ip parameter is likely used in a fetch routine (fetch, curl, file_get_contents(), etc.) — classic SSRF surface if not validated.</p>
+                        <p><strong>Safe testing approach used:</strong> Observed application responses to harmless, external test URLs to confirm retrieval behavior. No internal metadata queries were performed without proper authorizations (details redacted).</p>
+                    </div>
+
+                    <h2>4) SSRF Characterization — How We Safely Tested for Server-Side Fetching</h2>
+                    <p><strong>Threat model recap:</strong> If a process on the instance accepts a user-supplied URL and performs an outbound HTTP fetch, that process can be induced to retrieve internal-only endpoints (e.g., cloud metadata) — which exposes identity material.</p>
+
+                    <h4>Safe, redacted validation flow (conceptual):</h4>
+                    <ol>
+                        <li>Submit a lab-controlled external URL that returns a known marker</li>
+                        <li>Confirm that marker appears in the application's response/logs — indicates server-side fetch capability</li>
+                        <li>Once SSRF behavior is confirmed, escalate only within lab rules to verify internal reachability to internal-only endpoints</li>
+                    </ol>
+
+                    <p><strong>Result:</strong> SSRF behavior confirmed for ip parameter; application could fetch internal services reachable from the instance.</p>
+
+                    <h2>5) Credential Extraction — Artifact Description (Redacted)</h2>
+                    <p><strong>What was observed (sanitized):</strong></p>
+                    <div class="code-block">
+                        <code>{
+  "AccessKeyId": "<span class="redacted">REDACTED_KEY</span>",
+  "SecretAccessKey": "<span class="redacted">REDACTED_SECRET</span>", 
+  "Token": "<span class="redacted">REDACTED_SESSION_TOKEN</span>",
+  "Expiration": "<span class="redacted">REDACTED_EXPIRATION_TIMESTAMP</span>"
+}</code>
+                    </div>
+
+                    <p><strong>Important note:</strong> The credentials were temporary and associated with the EC2 instance role <span class="redacted">REDACTED_ROLE</span>. No permanent long-lived credentials were discovered in this chain.</p>
+
+                    <p class="severity-critical"><strong>Security classification:</strong> High — exposure of temporary IAM credentials that map to an instance-attached role is a critical identity disclosure.</p>
+
+                    <h2>6) Post-Exploitation Verification — Conceptual Validation & Safe Checks</h2>
+                    <p><em>(Everything redacted and conceptual — performed in-lab only.)</em></p>
+                    
+                    <p><strong>Purpose of verification:</strong> ensure the extracted credentials are real and to enumerate what the role could access, so defenders can prioritize remediations.</p>
+
+                    <h4>Conceptual checks performed:</h4>
+                    <ul>
+                        <li>Use the extracted temporary credentials to call a get-caller-identity-equivalent (redacted) to verify principal identity and role assumption shape</li>
+                        <li>Enumerate a minimal set of permitted APIs to determine blast radius (listing accessible buckets, reading permitted object metadata, etc.) — all within lab authorization</li>
+                    </ul>
+
+                    <p><strong>Outcome:</strong> credentials were valid and capable of performing actions allowed by the instance role.</p>
+
+                    <h2>7) Blast Radius & Pivot Scenarios (Conceptual — No Live Actions)</h2>
+                    <p>From the role's permissions, an adversary could conceptually:</p>
+                    <ul>
+                        <li>Enumerate object stores and download objects if read permission exists</li>
+                        <li>List compute resources and discover other instances or functions to attack</li>
+                        <li>Create ephemeral compute (if allowed) to achieve persistence</li>
+                        <li>Access secrets/parameter stores (if permitted) to obtain further credentials</li>
+                        <li>Chain trust relationships by using permissive role policies (conceptual escalation)</li>
+                    </ul>
+
+                    <h4>Risk Matrix (Redacted Labels):</h4>
+                    <table class="risk-matrix">
+                        <thead>
+                            <tr>
+                                <th>Vector</th>
+                                <th>Ease (Low/Med/High)</th>
+                                <th>Impact (Low/Med/High)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Read S3-like buckets</td>
+                                <td class="severity-high">High</td>
+                                <td class="severity-high">High</td>
+                            </tr>
+                            <tr>
+                                <td>Assume cross-account role</td>
+                                <td class="severity-medium">Medium</td>
+                                <td class="severity-high">High</td>
+                            </tr>
+                            <tr>
+                                <td>Deploy serverless backdoor</td>
+                                <td class="severity-low">Low</td>
+                                <td class="severity-high">High</td>
+                            </tr>
+                            <tr>
+                                <td>Exfiltrate DB snapshots</td>
+                                <td class="severity-medium">Medium</td>
+                                <td class="severity-high">High</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>8) Detection Playbook — What Defenders Should Implement Now</h2>
+                    <p>Below are concrete detection ideas (safe to implement, non-actionable). Build these rules into your SIEM/IDS/WAF:</p>
+
+                    <h4>CloudTrail / Audit-based:</h4>
+                    <ul>
+                        <li><span class="severity-critical">Alert:</span> EventName == "GetCallerIdentity" originating from an instance principal that doesn't match deployment automation accounts → Critical</li>
+                        <li><span class="severity-high">Alert:</span> AssumeRole events where source is an instance principal and not a known automation identity → High</li>
+                    </ul>
+
+                    <h4>Network / Host-based:</h4>
+                    <ul>
+                        <li><span class="severity-critical">Alert:</span> Outbound HTTP(S) from web server process to internal-only CIDR or metadata address → Critical</li>
+                        <li><span class="severity-medium">Alert:</span> Web processes performing high-frequency outbound fetches to many different hosts (abnormal for typical app behavior) → Medium</li>
+                    </ul>
+
+                    <h4>Application / WAF:</h4>
+                    <ul>
+                        <li><strong>Rule:</strong> Block requests containing internal-only URL patterns or IP ranges in parameters that are used server-side for fetches</li>
+                        <li><strong>Rule:</strong> Rate-limit and challenge (CAPTCHA) for forms that accept external URLs</li>
+                    </ul>
+
+                    <h2>9) Prioritized Remediation & Hardening Playbook</h2>
+
+                    <div class="remediation-priority">
+                        <h4 class="severity-critical">Priority 1 — Immediate (minutes to hours):</h4>
+                        <ol>
+                            <li><strong>Enforce metadata protection:</strong> require platform metadata service protections (session-based metadata requirement / IMDSv2 or equivalent)</li>
+                            <li><strong>Lock down instance IAM roles:</strong> change role policies to least privilege; remove broad * actions</li>
+                            <li><strong>Input allowlist:</strong> stop server-side fetches to arbitrary hosts — implement strict allowlists for any external fetcher feature</li>
+                        </ol>
+                    </div>
+
+                    <div class="remediation-priority">
+                        <h4 class="severity-high">Priority 2 — Short term (hours to days):</h4>
+                        <ol start="4">
+                            <li>Add WAF rules to detect and block SSRF-like input patterns</li>
+                            <li>Rotate any exposed credentials and invalidate sessions (if applicable)</li>
+                            <li>Improve logging to detect future similar attempts (host, app, cloud audit pipeline)</li>
+                        </ol>
+                    </div>
+
+                    <div class="remediation-priority">
+                        <h4 class="severity-medium">Priority 3 — Strategic (days to weeks):</h4>
+                        <ol start="7">
+                            <li>CI/CD secret scanning: implement automated scanning for leaked secrets in repos and artifact stores</li>
+                            <li>Network segmentation: limit egress from web tiers to required endpoints only</li>
+                            <li>Threat modeling & least-privilege review across roles and policies</li>
+                        </ol>
+                    </div>
+
+                    <h2>10) Tactical Defensive Templates (Redacted & Safe to Copy)</h2>
+                    <p><strong>Example: Minimal IAM policy for instance role (CONCEPTUAL)</strong></p>
+                    <div class="code-block">
+                        <code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowReadOnlySpecificBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<span class="redacted">REDACTED_BUCKET</span>",
+        "arn:aws:s3:::<span class="redacted">REDACTED_BUCKET</span>/*"
+      ]
+    }
+  ]
+}</code>
+                    </div>
+
+                    <p><strong>WAF pseudo-rule (conceptual):</strong> If request body contains a parameter used for server fetch AND value resolves to internal-only hostnames/IPs or metadata-like patterns → block + alert.</p>
+
+                    <h2>12) Incident Response Checklist (Fast, Practical)</h2>
+                    <p>If you detect this in production (don't panic, act):</p>
+                    <ol>
+                        <li><strong>Isolate:</strong> limit the instance's network egress and isolate the workload</li>
+                        <li><strong>Rotate:</strong> revoke/rotate exposed credentials and force session invalidation</li>
+                        <li><strong>Audit:</strong> collect CloudTrail logs and host logs to build a timeline of requests by the compromised principal</li>
+                        <li><strong>Contain:</strong> enforce IMDS protections and deploy emergency WAF rule to block SSRF-like inputs</li>
+                        <li><strong>Eradicate:</strong> remove the vulnerable code path, patch the app, and redeploy with improved validation</li>
+                        <li><strong>Remediate:</strong> least-privilege review and rotation of roles/keys system-wide as needed</li>
+                        <li><strong>Review:</strong> run tabletop to update runbooks and detection rules</li>
+                    </ol>
+
+                    <h2>14) Lessons Learned — Another Way of Saying "Don't Be Sloppy"</h2>
+                    <ul>
+                        <li>SSRF is an identity problem in cloud contexts — input validation alone is not enough if the instance can reach identity endpoints</li>
+                        <li>Make metadata access harder, not easier: IMDSv2-like protections + network egress controls</li>
+                        <li>Logging + SIEM rules win investigations — detect the reconnaissance before the extraction</li>
+                        <li>Developer hygiene matters: secrets in repos, test keys, and permissive IAM are consistent root causes</li>
+                    </ul>
+
+                    <div class="lab-context">
+                        <p><strong>Shoutout:</strong> CyberWarFare Labs — thanks for the range practice.</p>
+                        <p><em>All testing conducted in authorized lab environments with proper scope and controls.</em></p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Emmanuel Awe</h3>
+                    <p>Cybersecurity Engineer & AI Builder</p>
+                    <p class="muted">Building defensible systems, not just theory</p>
+                </div>
+                <div class="footer-links">
+                    <a href="mailto:hello@cocofelon.lol">📧 Contact</a>
+                    <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener noreferrer">💻 GitHub</a>
+                    <a href="../../index.html#certifications">📜 Certifications</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with 💝 and pure HTML/CSS/JS • cocofelon.lol</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Animation for content elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentElements = document.querySelectorAll('.article-content > *');
+            
+            contentElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100 + (index * 50));
+            });
+        });
+    </script>
+</body>
+</html>
