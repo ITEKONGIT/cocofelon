@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Took a Hacking Course So I Decided to Hack - Emmanuel Awe</title>
+    <meta name="description" content="APISEC UNI course review and VAPI hacking walkthrough - OWASP Top 10 API security vulnerabilities">
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="icon" href="../../assets/images/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .blog-post-page {
+            padding: 120px 0 60px;
+            min-height: 100vh;
+        }
+
+        .blog-post-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .back-to-blog {
+            margin-bottom: 3rem;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .article-title {
+            font-size: 2.3rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            color: var(--muted);
+            font-size: 1.1rem;
+            flex-wrap: wrap;
+        }
+
+        .article-author {
+            color: var(--accent-2);
+            font-weight: 600;
+        }
+
+        .article-badge {
+            padding: 0.5rem 1.5rem;
+            background: var(--accent-1);
+            color: white;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .article-content {
+            line-height: 1.8;
+            font-size: 1.15rem;
+            color: var(--muted);
+        }
+
+        .article-content h2 {
+            font-size: 1.8rem;
+            margin: 3rem 0 1.5rem 0;
+            color: var(--accent-2);
+            border-bottom: 1px solid rgba(124, 92, 255, 0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        .article-content h3 {
+            font-size: 1.4rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--accent-1);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .article-content em {
+            font-style: italic;
+        }
+
+        .article-content ul, .article-content ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.75rem;
+            color: var(--muted);
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: var(--accent-2);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .tech-highlight {
+            background: linear-gradient(135deg, rgba(124, 92, 255, 0.1), rgba(0, 224, 184, 0.1));
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--accent-1);
+        }
+
+        .api-section {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            border: 1px solid rgba(124, 92, 255, 0.2);
+        }
+
+        .api-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .api-number {
+            background: var(--accent-1);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .screenshot-placeholder {
+            background: rgba(255,255,255,0.05);
+            padding: 3rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            text-align: center;
+            border: 2px dashed rgba(124, 92, 255, 0.3);
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        .flag {
+            background: rgba(255, 110, 199, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--glow);
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .blog-post-page {
+                padding: 100px 0 40px;
+            }
+            
+            .article-title {
+                font-size: 1.8rem;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .article-content {
+                font-size: 1.1rem;
+            }
+            
+            .article-content h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="container">
+            <div class="nav-inner">
+                <a href="../../index.html" class="logo">cocofelon.lol</a>
+                <div class="nav-links">
+                    <a href="../../index.html">Home</a>
+                    <a href="../../index.html#skills">Skills</a>
+                    <a href="../../index.html#projects">Projects</a>
+                    <a href="../../index.html#certifications">Certifications</a>
+                    <a href="../../blogs.html">Blog</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="blog-post-page">
+        <div class="container">
+            <div class="blog-post-content">
+                <!-- Back to Blog -->
+                <div class="back-to-blog">
+                    <a href="../../blogs.html" class="btn btn-ghost">← Back to Blog</a>
+                </div>
+
+                <!-- Article Header -->
+                <header class="article-header">
+                    <h1 class="article-title">I Took a Hacking Course So I Decided to Hack</h1>
+                    <div class="article-meta">
+                        <span class="article-author">by COCOFELON</span>
+                        <span>•</span>
+                        <time datetime="2024-12-20">October 10, 2025</time>
+                        <span>•</span>
+                        <span>12 min read</span>
+                    </div>
+                    <span class="article-badge">API Security</span>
+                </header>
+
+                <!-- Article Content -->
+                <article class="article-content glass-card">
+                    <div class="tech-highlight">
+                        <p><strong>Course:</strong> APISEC UNI API Pentesting • <strong>Target:</strong> VAPI (Vulnerable API) • <strong>Result:</strong> OWASP Top 10 conquered</p>
+                    </div>
+
+                    <p>I took the APISEC UNI course on API Pentesting and hacking and lowkey i kinda feel Pentests and hacking, not much difference to be honest but yeah, yeah lets be real with ourselves. VAPI (The intentionally vulnerable API) is a very horrible and ugly way to design API for people to learn from to be honest, because what in Gods green earth is that thing i just hacked but yeah i hacked it and according to OWASP top 10, I'm sorta a badass you know?</p>
+
+                    <h2>API 1: IDOR & Parameter Manipulation</h2>
+                    
+                    <div class="api-section">
+                        <div class="api-header">
+                            <span class="api-number">API 1</span>
+                            <h3>Insecure Direct Object Reference</h3>
+                        </div>
+                        
+                        <p>First thing i hacked was API 1 and you know fingering (shhhhh) an API without clear ideas on what the API is supposed to do is sorta damning but yeah I did it either way. I dont like complaints because I'm just badass, I created a sweet user by the way.</p>
+                        
+                        <p>Pretty basic you'll guess correct? But no it isnt because after creating my user i realized, hey i can change the parameters present in the parameters being sent, so maybe try changing to other users, and just as you guessed, i was able to get every other user in the system. Heck it didnt even have some authentication.</p>
+
+                        <img src="enumtoidor.png" alt="IDOR attack showing user enumeration" 
+     style="width: 100%; border-radius: 8px; margin: 1.5rem 0;">
+
+                        <p><strong>Vulnerability:</strong> Insecure Direct Object Reference (IDOR) • <strong>Impact:</strong> Full user data exposure</p>
+                    </div>
+
+                    <h2>API 2: Brute Force & Lack of Rate Limiting</h2>
+                    
+                    <div class="api-section">
+                        <div class="api-header">
+                            <span class="api-number">API 2</span>
+                            <h3>Broken Authentication</h3>
+                        </div>
+                        
+                        <p>I am supposed to Login but for some weird reason, i cant login because i dont have emails and a password. Good thing they left a list of shitty emails and password, a sweet brute force should do this if they lack rate limit, shall we check it out?</p>
+                        
+                        <p>1000 requests later, it doesn't seem like they have anything stopping me from sending a million. Guess what this leads to? ATO via lack of rate limiting using brute forcing.</p>
+
+                        <div class="code-block">
+                            <code># Example brute force pattern
+for password in password_list:
+    response = requests.post(login_url, 
+                           data={'email': target_email, 
+                                 'password': password})
+    if response.status_code == 200:
+        print(f"Valid credentials: {password}")</code>
+                        </div>
+
+                        <p><strong>Vulnerability:</strong> Broken Authentication • <strong>Impact:</strong> Account Takeover</p>
+                    </div>
+
+                    <h2>API 3: Mobile App & PII Exposure</h2>
+                    
+                    <div class="api-section">
+                        <div class="api-header">
+                            <span class="api-number">API 3</span>
+                            <h3>Data Exposure</h3>
+                        </div>
+                        
+                        <p>It would look like we need an android device for this, but hey that doesn't stop us. Lets crank up a quick android emulator shall we?</p>
+                        
+                        <p>I am pretty sure your device doesn't look this pretty, does it. Well we tried to sign up on the device and it was successful, but the application made me spot something unnatural. I send comments, but i can see not just my own comment but some of my PII, not just that but some other information of other users including their precise location, which is disturbing might i add.</p>
+
+                        <img src="mobileexcessive.png" alt="PII and location exposure" 
+     style="width: 100%; border-radius: 8px; margin: 1.5rem 0;">
+
+                        <p><strong>Vulnerability:</strong> Excessive Data Exposure • <strong>Impact:</strong> PII and location leakage</p>
+                    </div>
+
+                    <h2>API 4: OTP Brute Force</h2>
+                    
+                    <div class="api-section">
+                        <div class="api-header">
+                            <span class="api-number">API 4</span>
+                            <h3>Broken Authentication</h3>
+                        </div>
+                        
+                        <p>In here it feels like a basic and boring login endpoint? SIKE! We gotta deal with OTP verification. Good thing burpsuite lets me try to sniper attack brute force this bloody target.</p>
+                        
+                        <p>Slight warning, you'll need burpsuite pro to help because community version is way too weak but yeah i think we aced that. Don't play with me friends.</p>
+
+                        <div class="code-block">
+                            <code># Burp Intruder payload for OTP brute force
+0000
+0001
+0002
+...
+9999</code>
+                        </div>
+
+                        <p><strong>Vulnerability:</strong> Weak OTP implementation • <strong>Impact:</strong> Bypass 2FA</p>
+                    </div>
+
+                    <h2>API 5: Parameter Pollution</h2>
+                    
+                    <div class="api-section">
+                        <div class="api-header">
+                            <span class="api-number">API 5</span>
+                            <h3>Broken Object Level Authorization</h3>
+                        </div>
+                        
+                        <p>Damn I'm beginning to get bored, i need something thrilling pleaseee. Okay wait i think I've found it a "Create User" endpoint. Lets see what fun we can do. I mean yeah we can create basic users? Or maybe not, maybe if we added some parameters we can achieve something different.</p>
+                        
+                        <p>A 200 response, of course you can verify but ill leave that up to you. Well maybe I'm not the best when it comes to hacking APIs but this definitely reminds me that im no easy catch.</p>
+
+                        <p><strong>Vulnerability:</strong> Parameter Tampering • <strong>Impact:</strong> Privilege escalation</p>
+                    </div>
+
+                    <h2>API 6: Internal Server Error Exploitation</h2>
+                    
+                    <div class="api-section">
+                        <div class="api-header">
+                            <span class="api-number">API 6</span>
+                            <h3>Security Misconfiguration</h3>
+                        </div>
+                        
+                        <p>We gotta create a new user, honestly i am tired of creating new users but hey lets create another shall we. Well we already created a regular account but lets see if theres anything interesting about it.</p>
+                        
+                        <p>First switch the header to GET with the parameters we have and lets see what we have. Well we didnt get anything in all honesty just some internal server error. Okay enough suspense, maybe we tweaked the parameter in the account creation section.</p>
+
+                        <p><strong>Vulnerability:</strong> Information Disclosure • <strong>Impact:</strong> System information leakage</p>
+                    </div>
+
+                    <h2>API 7: CORS Misconfiguration</h2>
+                    
+                    <div class="api-section">
+                        <div class="api-header">
+                            <span class="api-number">API 7</span>
+                            <h3>Security Misconfiguration</h3>
+                        </div>
+                        
+                        <p>So lets create a new user on this API endpoint real quick. We also gotta login to the app, but wait, something smells fishy here. Like why is the CORS header screaming "Access-Control-Allow-Origin: *" and still allowing credentials? That's straight-up begging for trouble, right?</p>
+                        
+                        <p>So I fired up Burp again, added a fake Origin header like I'm some shady third-party site, and BAM—sent the login request. Guess what? It spat back the full user deets: ID, username, password, authkey, the works! No questions asked, just because the origin was wild-carded.</p>
+
+                        <img src="CORS.png" alt="CORS Misconfiguration" 
+     style="width: 100%; border-radius: 8px; margin: 1.5rem 0;">
+
+                        <div class="flag">
+                            flag{api7_e71b65071645e24ed50a}
+                        </div>
+
+                        <p><strong>Vulnerability:</strong> CORS Misconfiguration • <strong>Impact:</strong> Cross-origin data theft</p>
+                    </div>
+
+                    <h2>API 8: SQL Injection</h2>
+                    
+                    <div class="api-section">
+                        <div class="api-header">
+                            <span class="api-number">API 8</span>
+                            <h3>Injection</h3>
+                        </div>
+                        
+                        <p>Okay, login endpoint? Boring, but let's poke it with some SQL spice. I threw in a classic "' OR 1-- " into the username in Postman, proxied through Burp, and hit Intruder on sniper mode with a bunch of SQL payloads.</p>
+                        
+                        <p>Most gave 403, but one? Boom, 500 error with a MySQL syntax freakout—jackpot, unsanitized inputs confirmed! Time to escalate, pulled out sqlmap like a boss: enumerated the DBs, found "vapi", tables like "a_p_i8_users", columns for password, secret, username.</p>
+
+                        <div class="code-block">
+                            <code>sqlmap -u "http://vapi/api8/login" --data="username=admin&password=test" 
+       --dbs --tables -D vapi -T a_p_i8_users --dump</code>
+                        </div>
+
+                        <div class="flag">
+                            flag{api8_509f8e201807860d5c91}
+                        </div>
+
+                        <p><strong>Vulnerability:</strong> SQL Injection • <strong>Impact:</strong> Full database compromise</p>
+                    </div>
+
+                    <h2>API 9: Improper Assets Management</h2>
+                    
+                    <div class="api-section">
+                        <div class="api-header">
+                            <span class="api-number">API 9</span>
+                            <h3>Version Exposure</h3>
+                        </div>
+                        
+                        <p>This one's got v2 with rate limits (boo), but I sniffed around and spotted a /v1/ path hiding in the shadows—no limits there! Switched the URL in Burp Repeater to /vapi/api9/v1/user/login, crunched up a numbers.txt for PIN brute (0000-9999), and FFUF'd it.</p>
+
+                        <div class="code-block">
+                            <code>ffuf -w numbers.txt -X POST \
+     -H "Content-Type: application/json" \
+     -d '{"username":"richardbranson","pin":"FUZZ"}' \
+     -u http://vapi/api9/v1/user/login</code>
+                        </div>
+
+                        <div class="flag">
+                            flag{api9_81e306bdd20a7734e244}
+                        </div>
+
+                        <p><strong>Vulnerability:</strong> Improper Assets Management • <strong>Impact:</strong> Bypass security controls</p>
+                    </div>
+
+                    <h2>API 10: Insufficient Logging & Monitoring</h2>
+                    
+                    <div class="api-section">
+                        <div class="api-header">
+                            <span class="api-number">API 10</span>
+                            <h3>Missing Monitoring</h3>
+                        </div>
+                        
+                        <p>Boredom strikes again, but wait—"Get Flag" endpoint? Just POST to it in Postman, no fuss, no muss. Grabs the flag straight up. No vuln to exploit, just... there.</p>
+                        
+                        <p>Insufficient logging means no one's watching, no alerts, pure stealth access. OWASP nailed it—monitoring is key, or else flags (and real secrets) walk right out the door!</p>
+
+                        <div class="flag">
+                            flag{api10_5db611f7c1ffd747971}
+                        </div>
+
+                        <p><strong>Vulnerability:</strong> Insufficient Logging & Monitoring • <strong>Impact:</strong> Undetected data access</p>
+                    </div>
+
+                    <h2>Bonus APIs: The Extra Mile</h2>
+
+                    <div class="api-section">
+                        <div class="api-header">
+                            <span class="api-number">BONUS</span>
+                            <h3>Advanced Techniques</h3>
+                        </div>
+                        
+                        <p>The walkthrough threw in three extras:</p>
+                        
+                        <ul>
+                            <li><strong>API 11:</strong> Undocumented endpoint guessing for hidden admin funcs—fuzzed paths in Burp till /admin/secret dumped the goods</li>
+                            <li><strong>API 12:</strong> XML bomb DoS via external entity—parsed a massive XML payload to crash the parser</li>
+                            <li><strong>API 13:</strong> API chaining abuse, linking vulns from prior APIs into a full account takeover chain</li>
+                        </ul>
+
+                        <p>Each spat flags like candy. Felt like leveling up in a video game, OWASP bonuses making me feel invincible!</p>
+                    </div>
+
+                    <h2>Wrapping This Hackfest</h2>
+                    
+                    <div class="tech-highlight">
+                        <p>Whew, from IDOR noobs to SQL dumps and CORS clowning, VAPI turned me into a API-slaying machine. Course paid off—pentesting feels like ethical hacking with extra steps, but damn, the rush is real.</p>
+                        
+                        <p>If you're dipping toes, grab Docker, Burp, and go wild (legally, obvs). OWASP Top 10? Conquered. Badass level: Expert. Who's next? Drop your vulns, I'm ready! 🚀</p>
+                    </div>
+
+                    <img src="apisecpentest.png" alt="APISEC COURSE" 
+     style="width: 100%; border-radius: 8px; margin: 1.5rem 0;">
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Emmanuel Awe</h3>
+                    <p>Cybersecurity Engineer & AI Builder</p>
+                    <p class="muted">Building defensible systems, not just theory</p>
+                </div>
+                <div class="footer-links">
+                    <a href="mailto:hello@cocofelon.lol">📧 Contact</a>
+                    <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener noreferrer">💻 GitHub</a>
+                    <a href="../../index.html#certifications">📜 Certifications</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with 💝 and pure HTML/CSS/JS • cocofelon.lol</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Animation for content elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentElements = document.querySelectorAll('.article-content > *');
+            
+            contentElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100 + (index * 50));
+            });
+        });
+    </script>
+</body>
+</html>
