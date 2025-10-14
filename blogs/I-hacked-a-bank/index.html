@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I HACKED A BANK - VulnBank VAPT Breakdown - Emmanuel Awe</title>
+    <meta name="description" content="How I found 17 critical vulnerabilities in a banking app - SQL injection, privilege escalation, and unauthorized payments">
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="icon" href="../../assets/images/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .blog-post-page {
+            padding: 120px 0 60px;
+            min-height: 100vh;
+        }
+
+        .blog-post-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .back-to-blog {
+            margin-bottom: 3rem;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .article-title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            color: var(--muted);
+            font-size: 1.1rem;
+            flex-wrap: wrap;
+        }
+
+        .article-author {
+            color: var(--accent-2);
+            font-weight: 600;
+        }
+
+        .article-badge {
+            padding: 0.5rem 1.5rem;
+            background: var(--accent-1);
+            color: white;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .article-content {
+            line-height: 1.8;
+            font-size: 1.15rem;
+            color: var(--muted);
+        }
+
+        .article-content h2 {
+            font-size: 1.8rem;
+            margin: 3rem 0 1.5rem 0;
+            color: var(--accent-2);
+            border-bottom: 1px solid rgba(124, 92, 255, 0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        .article-content h3 {
+            font-size: 1.4rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--accent-1);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .article-content em {
+            font-style: italic;
+        }
+
+        .article-content ul, .article-content ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.75rem;
+            color: var(--muted);
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: var(--accent-2);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .danger-note {
+            background: linear-gradient(135deg, rgba(255, 110, 199, 0.1), rgba(124, 92, 255, 0.1));
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            border-left: 4px solid var(--glow);
+        }
+
+        .vuln-section {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            border: 1px solid rgba(124, 92, 255, 0.2);
+        }
+
+        .vuln-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .vuln-title {
+            flex: 1;
+            margin: 0;
+        }
+
+        .severity-critical { 
+            background: linear-gradient(135deg, #ff6ec7, #ff4757);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .severity-high { 
+            background: rgba(255, 110, 199, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .severity-medium { 
+            background: rgba(124, 92, 255, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            text-align: center;
+            border: 1px solid rgba(124, 92, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .screenshot-placeholder {
+            background: rgba(255,255,255,0.05);
+            padding: 3rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            text-align: center;
+            border: 2px dashed rgba(124, 92, 255, 0.3);
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        .continue-section {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            border: 1px solid rgba(124, 92, 255, 0.2);
+            text-align: center;
+        }
+
+        .continue-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .continue-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .blog-post-page {
+                padding: 100px 0 40px;
+            }
+            
+            .article-title {
+                font-size: 2rem;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .article-content {
+                font-size: 1.1rem;
+            }
+            
+            .article-content h2 {
+                font-size: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="container">
+            <div class="nav-inner">
+                <a href="../../index.html" class="logo">cocofelon.lol</a>
+                <div class="nav-links">
+                    <a href="../../index.html">Home</a>
+                    <a href="../../index.html#skills">Skills</a>
+                    <a href="../../index.html#projects">Projects</a>
+                    <a href="../../index.html#certifications">Certifications</a>
+                    <a href="../../blogs.html">Blog</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="blog-post-page">
+        <div class="container">
+            <div class="blog-post-content">
+                <!-- Back to Blog -->
+                <div class="back-to-blog">
+                    <a href="../../blogs.html" class="btn btn-ghost">← Back to Blog</a>
+                </div>
+
+                <!-- Article Header -->
+                <header class="article-header">
+                    <h1 class="article-title">I HACKED A BANK: How I Found 17 Critical Vulnerabilities in VulnBank</h1>
+                    <div class="article-meta">
+                        <span class="article-author">by COCOFELON</span>
+                        <span>•</span>
+                        <time datetime="2025-10-14">October 14, 2025</time>
+                        <span>•</span>
+                        <span>18 min read</span>
+                    </div>
+                    <span class="article-badge">Penetration Testing</span>
+                </header>
+
+                <!-- Article Content -->
+                <article class="article-content glass-card">
+                    <div class="danger-note">
+                        <p><strong>🚨 LEGAL DISCLAIMER:</strong> This was a controlled penetration test on VulnBank - an intentionally vulnerable application in an authorized lab environment. All findings were reported responsibly. Don't try this on real banks unless you want to meet the FBI.</p>
+                    </div>
+
+                    <p>So I decided to hack a bank. Not for the money (obviously), but to see if I could turn their digital fortress into Swiss cheese. And guess what? I found enough holes to drain their entire vault if I were a bad actor. 17 vulnerabilities, 4 critical, 10 high-severity - this wasn't just a security assessment, it was a digital heist simulation that exposed how fragile banking apps can be.</p>
+
+                    <p>Using nothing but Burp Suite, SQLMap, and some custom scripts, I went from zero to full admin access in hours. SQL injection to steal accounts, privilege escalation to become bank manager, unauthorized payments to empty accounts - the whole nine yards. Let me show you how I turned their "secure" banking app into my personal playground.</p>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">17</div>
+                            <div>Total Vulnerabilities</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">4</div>
+                            <div>Critical Findings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">10</div>
+                            <div>High Severity</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">9.9</div>
+                            <div>Max CVSS Score</div>
+                        </div>
+                    </div>
+
+                    <h2>The Crown Jewels: Critical Vulnerabilities That Would Make Any CISO Sweat</h2>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">SQL Injection in Login - The Master Key</h3>
+                            <span class="severity-critical">CRITICAL - 9.8 CVSS</span>
+                        </div>
+                        
+                        <p>First things first - I needed to get in. The login endpoint was begging to be hacked. One simple payload and I owned every account:</p>
+
+                        <div class="code-block">
+                            <code>POST /login
+{
+    "username": "' OR 1=1 --",
+    "password": "anything"
+}</code>
+                        </div>
+
+                        <p><strong>What this means:</strong> I could access ANY user's account just by typing some SQL magic. Got account numbers, balances, personal details - the whole shebang. For a real attacker, this is Christmas morning.</p>
+
+                        <img src="sqlinjection.png" alt="SQL INJECTION" 
+     style="width: 100%; border-radius: 8px; margin: 1.5rem 0;">
+
+                        <p><strong>Real-world impact:</strong> Account takeover, identity theft, financial fraud. Basically, I could be you.</p>
+                    </div>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Privilege Escalation - Becoming Bank Manager</h3>
+                            <span class="severity-critical">CRITICAL - 9.9 CVSS</span>
+                        </div>
+                        
+                        <p>Regular user access is cool, but I wanted the keys to the kingdom. During registration, I discovered I could just declare myself admin:</p>
+
+                        <div class="code-block">
+                            <code>POST /register
+{
+    "username": "cocofelon",
+    "password": "password123",
+    "is_admin": true
+}</code>
+                        </div>
+
+                        <p>Boom. Instant admin access. Suddenly I had access to <code>/sup3r_s3cr3t_admin</code> panel where I could delete user accounts, approve loans for myself, and basically run the bank.</p>
+
+                        <p><strong>What this means:</strong> I went from zero to bank manager in 30 seconds. No background checks, no interviews - just a simple JSON field.</p>
+
+                        <img src="admintakeover.png" alt="ADMIN ATO" 
+     style="width: 100%; border-radius: 8px; margin: 1.5rem 0;">
+                    </div>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">SSRF - Stealing the Bank's Secret Files</h3>
+                            <span class="severity-critical">CRITICAL - 9.1 CVSS</span>
+                        </div>
+                        
+                        <p>The profile picture upload feature had a nasty trick - it would fetch files from anywhere, including the bank's own internal systems:</p>
+
+                        <div class="code-block">
+                            <code>POST /upload_profile_picture_url
+{
+    "url": "file:///etc/passwd"
+}</code>
+                        </div>
+
+                        <p>The server obediently fetched and exposed internal files. In a real scenario, this could leak AWS credentials, database passwords, or customer data.</p>
+
+                        <p><strong>What this means:</strong> I could make the bank's server rat itself out and hand me its deepest secrets.</p>
+                    </div>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Unauthorized Payments - Spending Other People's Money</h3>
+                            <span class="severity-critical">CRITICAL - 9.1 CVSS</span>
+                        </div>
+                        
+                        <p>This one's straight-up terrifying. Using card IDs I obtained through other vulnerabilities, I could make payments from other people's accounts:</p>
+
+                        <div class="code-block">
+                            <code>POST /api/bill-payments/create
+{
+    "card_id": "someone_elses_card",
+    "amount": 1000,
+    "recipient": "my_account"
+}</code>
+                        </div>
+
+                        <p><strong>What this means:</strong> I could literally transfer money from your account to mine. No authentication, no questions asked.</p>
+                    </div>
+
+                    <h2>The Supporting Cast: High-Severity Shenanigans</h2>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Mass Assignment - Giving Myself $2 Million</h3>
+                            <span class="severity-high">HIGH - 8.8 CVSS</span>
+                        </div>
+                        
+                        <p>During registration, I discovered I could just declare myself a millionaire:</p>
+
+                        <div class="code-block">
+                            <code>POST /register
+{
+    "username": "rich_af",
+    "password": "password",
+    "balance": 2000000
+}</code>
+                        </div>
+
+                        <p>The server accepted it without question. Instant millionaire status.</p>
+                    </div>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Race Condition - The Infinite Money Glitch</h3>
+                            <span class="severity-high">HIGH - 8.3 CVSS</span>
+                        </div>
+                        
+                        <p>By sending multiple transfer requests simultaneously, I could spend more money than I had:</p>
+
+                        <div class="code-block">
+                            <code># Send 10 simultaneous transfer requests
+for i in {1..10}; do
+    curl -X POST /transfer -d '{"amount": 100}' &
+done</code>
+                        </div>
+
+                        <p>The balance checks happened too slowly, letting me overdraft by thousands.</p>
+                    </div>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Brute Force - Cracking Reset PINs</h3>
+                            <span class="severity-high">HIGH - 8.1 CVSS</span>
+                        </div>
+                        
+                        <p>Password reset endpoints had no rate limiting, so I could brute-force 4-digit PINs in minutes:</p>
+
+                        <div class="code-block">
+                            <code># Burp Intruder payloads
+0000
+0001
+0002
+...
+9999</code>
+                        </div>
+
+                        <p>Once I got the PIN, I owned the account and all its debug information.</p>
+                    </div>
+
+                    <h2>The Tool Arsenal</h2>
+
+                    <p>This wasn't some sophisticated nation-state attack - just common tools used creatively:</p>
+
+                    <ul>
+                        <li><strong>Burp Suite:</strong> For intercepting, manipulating, and brute-forcing requests</li>
+                        <li><strong>SQLMap:</strong> For automating SQL injection and database enumeration</li>
+                        <li><strong>Custom Python scripts:</strong> For race condition exploitation and mass requests</li>
+                        <li><strong>Postman:</strong> For API endpoint discovery and testing</li>
+                    </ul>
+
+                    <h2>How This Would Play Out in the Real World</h2>
+
+                    <p>If this were a real bank, here's what a malicious actor could accomplish:</p>
+
+                    <ol>
+                        <li><strong>Day 1:</strong> SQL injection to steal customer database</li>
+                        <li><strong>Day 2:</strong> Privilege escalation to admin access</li>
+                        <li><strong>Day 3:</strong> Mass assignment to create unlimited funds</li>
+                        <li><strong>Day 4:</strong> Unauthorized payments to drain accounts</li>
+                        <li><strong>Day 5:</strong> SSRF to steal internal infrastructure secrets</li>
+                    </ol>
+
+                    <p>By day 6, they'd own the entire banking operation.</p>
+
+                    <h2>The Fixes That Would Save This Bank</h2>
+
+                    <div class="danger-note">
+                        <p><strong>🛡️ IMMEDIATE REMEDIATION PRIORITIES:</strong></p>
+                        <ul>
+                            <li>Parameterized queries to kill SQL injection</li>
+                            <li>Proper authentication and authorization checks</li>
+                            <li>Input validation and field whitelisting</li>
+                            <li>Rate limiting on all endpoints</li>
+                            <li>Remove debug information from production</li>
+                        </ul>
+                    </div>
+
+                    <div class="continue-section">
+                        <h3>Continue to Part 2</h3>
+                        <p>In Part 2, we'll dive into the supporting vulnerabilities - IDOR attacks, information disclosure, file upload issues, and complete the attack chain.</p>
+                        <a href="part2.html" class="continue-btn">Read Part 2: The Supporting Cast →</a>
+                    </div>
+
+                    <h2>Final Thoughts</h2>
+
+                    <p>This wasn't about being a "hacker" - it was about understanding how seemingly small oversights can lead to catastrophic breaches. Banking apps handle people's life savings, and security can't be an afterthought.</p>
+
+                    <p>The scary part? These aren't sophisticated zero-days. They're basic OWASP Top 10 issues that proper security practices would catch. It shows that many organizations are still failing security 101.</p>
+
+                    <p>If you're building financial applications: test early, test often, and assume someone like me is already poking at your endpoints. Because we are. 🔒</p>
+
+                    <div class="danger-note">
+                        <p><strong>🔐 REMEMBER:</strong> Always conduct security testing ethically with proper authorization. This assessment was performed in a controlled lab environment as part of professional security research.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Emmanuel Awe</h3>
+                    <p>Cybersecurity Engineer & AI Builder</p>
+                    <p class="muted">Building defensible systems, not just theory</p>
+                </div>
+                <div class="footer-links">
+                    <a href="mailto:hello@cocofelon.lol">📧 Contact</a>
+                    <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener noreferrer">💻 GitHub</a>
+                    <a href="../../index.html#certifications">📜 Certifications</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with 💝 and pure HTML/CSS/JS • cocofelon.lol</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Animation for content elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentElements = document.querySelectorAll('.article-content > *');
+            
+            contentElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100 + (index * 50));
+            });
+        });
+    </script>
+</body>
+</html>

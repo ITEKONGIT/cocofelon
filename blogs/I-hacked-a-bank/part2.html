@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I HACKED A BANK: Part 2 - The Supporting Cast - Emmanuel Awe</title>
+    <meta name="description" content="Part 2: IDOR, information disclosure, and file upload vulnerabilities that complete the banking app takeover">
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="icon" href="../../assets/images/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .blog-post-page {
+            padding: 120px 0 60px;
+            min-height: 100vh;
+        }
+
+        .blog-post-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .back-to-blog {
+            margin-bottom: 3rem;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .article-title {
+            font-size: 2.3rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            color: var(--muted);
+            font-size: 1.1rem;
+            flex-wrap: wrap;
+        }
+
+        .article-author {
+            color: var(--accent-2);
+            font-weight: 600;
+        }
+
+        .article-badge {
+            padding: 0.5rem 1.5rem;
+            background: var(--accent-1);
+            color: white;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .article-content {
+            line-height: 1.8;
+            font-size: 1.15rem;
+            color: var(--muted);
+        }
+
+        .article-content h2 {
+            font-size: 1.8rem;
+            margin: 3rem 0 1.5rem 0;
+            color: var(--accent-2);
+            border-bottom: 1px solid rgba(124, 92, 255, 0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        .article-content h3 {
+            font-size: 1.4rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--accent-1);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .article-content em {
+            font-style: italic;
+        }
+
+        .article-content ul, .article-content ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.75rem;
+            color: var(--muted);
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: var(--accent-2);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .danger-note {
+            background: linear-gradient(135deg, rgba(255, 110, 199, 0.1), rgba(124, 92, 255, 0.1));
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            border-left: 4px solid var(--glow);
+        }
+
+        .vuln-section {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            border: 1px solid rgba(124, 92, 255, 0.2);
+        }
+
+        .vuln-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .vuln-title {
+            flex: 1;
+            margin: 0;
+        }
+
+        .severity-critical { 
+            background: linear-gradient(135deg, #ff6ec7, #ff4757);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .severity-high { 
+            background: rgba(255, 110, 199, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .severity-medium { 
+            background: rgba(124, 92, 255, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .screenshot-placeholder {
+            background: rgba(255,255,255,0.05);
+            padding: 3rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            text-align: center;
+            border: 2px dashed rgba(124, 92, 255, 0.3);
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        .continue-section {
+            background: linear-gradient(135deg, rgba(0, 224, 184, 0.1), rgba(124, 92, 255, 0.1));
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .continue-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--accent-1);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .continue-btn:hover {
+            background: var(--accent-2);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .blog-post-page {
+                padding: 100px 0 40px;
+            }
+            
+            .article-title {
+                font-size: 1.8rem;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .article-content {
+                font-size: 1.1rem;
+            }
+            
+            .article-content h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="container">
+            <div class="nav-inner">
+                <a href="../../index.html" class="logo">cocofelon.lol</a>
+                <div class="nav-links">
+                    <a href="../../index.html">Home</a>
+                    <a href="../../index.html#skills">Skills</a>
+                    <a href="../../index.html#projects">Projects</a>
+                    <a href="../../index.html#certifications">Certifications</a>
+                    <a href="../../blogs.html">Blog</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="blog-post-page">
+        <div class="container">
+            <div class="blog-post-content">
+                <!-- Back to Blog -->
+                <div class="back-to-blog">
+                    <a href="../../blogs.html" class="btn btn-ghost">← Back to Blog</a>
+                </div>
+
+                <!-- Article Header -->
+                <header class="article-header">
+                    <h1 class="article-title">I HACKED A BANK: Part 2 - The Supporting Cast</h1>
+                    <div class="article-meta">
+                        <span class="article-author">by COCOFELON</span>
+                        <span>•</span>
+                        <time datetime="2025-10-15">October 15, 2025</time>
+                        <span>•</span>
+                        <span>Part 2 of 2 • 15 min read</span>
+                    </div>
+                    <span class="article-badge">Penetration Testing</span>
+                </header>
+
+                <!-- Article Content -->
+                <article class="article-content glass-card">
+                    <div class="danger-note">
+                        <p><strong>🚨 CONTINUING THE HEIST:</strong> In Part 1, I showed you how to become bank manager and drain accounts. Now let me show you the supporting vulnerabilities that make the attack complete. Same rules apply - authorized testing only!</p>
+                    </div>
+
+                    <p>Welcome back to the VulnBank takedown! In Part 1, I showed you the big guns - SQL injection to steal accounts, privilege escalation to become admin, and unauthorized payments to empty vaults. But every good heist needs a supporting crew.</p>
+
+                    <p>Today we're covering the 10 additional vulnerabilities that turn a simple breach into a complete system takeover. These are the IDORs, information disclosures, and misconfigurations that let attackers move silently and gather intel before striking.</p>
+
+                    <div class="continue-section">
+                        <p><strong>Missed Part 1?</strong> Catch up on the critical vulnerabilities first!</p>
+                        <a href="index.html" class="continue-btn">Read Part 1: The Big Hitters →</a>
+                    </div>
+
+                    <h2>The Information Gathering Phase</h2>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Information Disclosure - The API Version Downgrade Trick</h3>
+                            <span class="severity-high">HIGH - 7.5 CVSS</span>
+                        </div>
+                        
+                        <p>While poking around the password reset functionality, I discovered something beautiful - API version downgrade attacks:</p>
+
+                        <div class="code-block">
+                            <code># Version 2 - basic info
+POST /api/v2/forgot-password
+{"username": "victim"}
+
+# Version 1 - FULL DATA LEAK
+POST /api/v1/forgot-password  
+{"username": "victim"}
+# Response: {"card_pin": "1234", "pin_length": 4}</code>
+                        </div>
+
+                        <p>By simply changing <code>v2</code> to <code>v1</code> in the endpoint, the API spilled everyone's card PINs. It's like finding out the bank's old security system still works but gives you extra keys.</p>
+
+                        <img src="exposedpin.png" alt="exposed pin" 
+     style="width: 100%; border-radius: 8px; margin: 1.5rem 0;">
+
+                        <p><strong>Real-world impact:</strong> ATM fraud, unauthorized transactions, identity theft. Knowing someone's PIN is half the battle won.</p>
+                    </div>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Balance Disclosure - Peeking at Everyone's Wallet</h3>
+                            <span class="severity-medium">MEDIUM - 5.3 CVSS</span>
+                        </div>
+                        
+                        <p>Want to know who's rich and who's broke? Just ask:</p>
+
+                        <div class="code-block">
+                            <code>GET /balance/123456789
+# No authentication needed!
+# Response: {"balance": 42069.69}</code>
+                        </div>
+
+                        <p>No authentication, no ownership checks. Just feed it any account number you find (thanks to our SQL injection from Part 1) and get instant financial intel.</p>
+
+                        <p><strong>Why this matters:</strong> Social engineering gold. "Hey Mr. Rich Guy, I noticed you have $50K in your account..."</p>
+                    </div>
+
+                    <h2>The IDOR Army - Broken Access Control Everywhere</h2>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Transactions IDOR - Reading Everyone's Financial Diary</h3>
+                            <span class="severity-high">HIGH - 7.5 CVSS</span>
+                        </div>
+                        
+                        <p>Remember when banks used to be private about your transactions? VulnBank missed that memo:</p>
+
+                        <div class="code-block">
+                            <code>GET /transactions/123456789
+# Response: Full transaction history
+# ["Starbucks $5.75", "OnlyFans $19.99", "Bank Transfer $1000"]</code>
+                        </div>
+
+                        <p>Combine this with the account numbers we stole via SQL injection, and suddenly I'm reading everyone's financial diary. Embarrassing purchases, secret transfers, business dealings - it's all there.</p>
+
+                        <img src="transactionhistory.png" alt="transaction history" 
+     style="width: 100%; border-radius: 8px; margin: 1.5rem 0;">
+                    </div>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Authenticated SQL Injection - The Gift That Keeps Giving</h3>
+                            <span class="severity-high">HIGH - 8.8 CVSS</span>
+                        </div>
+                        
+                        <p>Because one SQL injection wasn't enough, I found another one that works even after authentication:</p>
+
+                        <div class="code-block">
+                            <code>POST /some-authenticated-endpoint
+{
+    "account_number": "' OR 1=1 --",
+    "other_data": "normal stuff"
+}</code>
+                        </div>
+
+                        <p>Even after logging in properly, I could still inject SQL through various parameters. It's like the bank gave me a VIP badge but forgot to check what I'm carrying in my pockets.</p>
+
+                        <p><strong>Lesson:</strong> Input validation isn't a one-time thing. You need it everywhere.</p>
+                    </div>
+
+                    <h2>The File Upload Fiasco</h2>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Unrestricted File Upload - Uploading Anything But Photos</h3>
+                            <span class="severity-high">HIGH - 7.2 CVSS</span>
+                        </div>
+                        
+                        <p>The profile picture upload feature had one job: accept images. It failed spectacularly:</p>
+
+                        <div class="code-block">
+                            <code>POST /upload_profile_picture
+Content-Type: multipart/form-data
+
+-- Upload a PHP shell, EXE, or massive file --
+The server accepts it without question</code>
+                        </div>
+
+                        <p>I could upload PHP shells for remote code execution, massive files for DoS, or executables for persistence. The server just happily stored whatever I sent.</p>
+
+                        <img src="phpshellfile.png" alt="php upload" 
+     style="width: 100%; border-radius: 8px; margin: 1.5rem 0;">
+                    </div>
+
+                    <h2>The Virtual Card Circus</h2>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Arbitrary Card Creation - Making Up My Own Card Types</h3>
+                            <span class="severity-high">HIGH - 7.1 CVSS</span>
+                        </div>
+                        
+                        <p>The virtual card system let me create whatever fantasy cards I wanted:</p>
+
+                        <div class="code-block">
+                            <code>POST /api/virtual-card/create
+{
+    "card_type": "unlimited_black_card",
+    "credit_limit": 9999999,
+    "custom_field": "why_not"
+}</code>
+                        </div>
+
+                        <p>The server accepted any card type I invented and any extra fields I added. Mass assignment strikes again!</p>
+                    </div>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Get Cards Disclosure - Seeing Everyone's Virtual Wallets</h3>
+                            <span class="severity-medium">MEDIUM - 6.5 CVSS</span>
+                        </div>
+                        
+                        <p>Once I had access to the virtual cards endpoint, I could see everyone's cards:</p>
+
+                        <div class="code-block">
+                            <code>GET /api/virtual-cards
+# Response: All cards for all users
+# [
+#   {"user": "alice", "card_number": "4111...", "balance": 1000},
+#   {"user": "bob", "card_number": "5111...", "balance": 5000}
+# ]</code>
+                        </div>
+
+                        <p>No filtering, no access controls. Log in as any user, see every card in the system.</p>
+                    </div>
+
+                    <h2>The IDOR Trio - Complete Card Control</h2>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Card Freezing IDOR - Remote Account Locking</h3>
+                            <span class="severity-high">HIGH - 7.7 CVSS</span>
+                        </div>
+                        
+                        <p>Using the card IDs from the previous vulnerability, I could freeze anyone's cards:</p>
+
+                        <div class="code-block">
+                            <code>POST /api/virtual-cards/foreign_card_id_123/freeze
+# Response: {"status": "frozen"}</code>
+                        </div>
+
+                        <p>Instant denial-of-service for any user. Perfect for targeted attacks or just causing chaos.</p>
+                    </div>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Card Transactions IDOR - More Financial Snooping</h3>
+                            <span class="severity-medium">MEDIUM - 6.5 CVSS</span>
+                        </div>
+                        
+                        <p>Same pattern, different endpoint:</p>
+
+                        <div class="code-block">
+                            <code>GET /api/virtual-cards/foreign_card_id_123/transactions
+# Response: That card's complete transaction history</code>
+                        </div>
+
+                        <p>Because apparently one way to view transactions wasn't enough.</p>
+                    </div>
+
+                    <div class="vuln-section">
+                        <div class="vuln-header">
+                            <h3 class="vuln-title">Card Limit Update IDOR - Playing God with Credit Limits</h3>
+                            <span class="severity-high">HIGH - 8.1 CVSS</span>
+                        </div>
+                        
+                        <p>The pièce de résistance of the IDOR collection:</p>
+
+                        <div class="code-block">
+                            <code>POST /api/virtual-cards/foreign_card_id_123/update-limit
+{"new_limit": 0}  # Or 1000000, dealer's choice</code>
+                        </div>
+
+                        <p>I could set anyone's credit limit to zero (effectively freezing their card) or to millions (enabling massive fraud). Complete control over other people's financial limits.</p>
+
+                        <img src="cardlimitupdate.png" alt="card limit update" 
+     style="width: 100%; border-radius: 8px; margin: 1.5rem 0;">
+                    </div>
+
+                    <h2>Putting It All Together: The Complete Attack Chain</h2>
+
+                    <p>Now let me show you how a real attacker would chain these vulnerabilities:</p>
+
+                    <div class="code-block">
+                        <code># Phase 1: Reconnaissance
+1. SQL injection to dump all account numbers
+2. Balance disclosure to identify high-value targets
+3. API version downgrade to steal card PINs
+
+# Phase 2: Establishment  
+4. Unrestricted file upload for backdoor persistence
+5. Privilege escalation to admin for full control
+
+# Phase 3: Attack
+6. Mass assignment to create unlimited funds
+7. Unauthorized payments to transfer money
+8. Card freezing for targeted denial-of-service
+9. Race condition for infinite money glitch</code>
+                    </div>
+
+                    <p>Each vulnerability supports the others, creating a domino effect that leads to complete system compromise.</p>
+
+                    <h2>The Complete Vulnerability Scorecard</h2>
+
+                    <p>For those keeping score at home, here's the full breakdown:</p>
+
+                    <div class="danger-note">
+                        <p><strong>CRITICAL (4):</strong> SQL Injection, SSRF, Privilege Escalation, Unauthorized Payments</p>
+                        <p><strong>HIGH (10):</strong> Mass Assignment, Brute Force, Race Condition, Information Disclosure, Authenticated SQLi, File Upload, Arbitrary Card Creation, Card Freezing, Card Limit Update, Transactions IDOR</p>
+                        <p><strong>MEDIUM (3):</strong> Balance Disclosure, Get Cards Disclosure, Card Transactions IDOR</p>
+                        <p><strong>TOTAL: 17 vulnerabilities that create a perfect storm</strong></p>
+                    </div>
+
+                    <h2>Final Thoughts: Why This Matters</h2>
+
+                    <p>This wasn't just about finding bugs - it was about understanding attack chains. Individual vulnerabilities are bad, but chained together they're catastrophic.</p>
+
+                    <p>What scared me most wasn't any single vulnerability, but how they all worked together. The lack of defense in depth meant that breaching one layer gave access to everything.</p>
+
+                    <p>For developers and security teams: Test holistically. Don't just look for individual bugs - look for how they can be combined. Because attackers definitely will.</p>
+
+                    <p>For aspiring pentesters: This is why we do what we do. Finding these issues before the bad guys do is what keeps systems (and people's money) safe.</p>
+
+                    <div class="continue-section">
+                        <p><strong>Want to see the complete picture?</strong> Read both parts for the full story!</p>
+                        <a href="index.html" class="continue-btn">Re-read Part 1: The Big Hitters →</a>
+                    </div>
+
+                    <div class="danger-note">
+                        <p><strong>🔐 SECURITY DISCLAIMER:</strong> This assessment was conducted ethically in a controlled lab environment. All vulnerabilities were reported to the appropriate parties. Never test systems without explicit authorization.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Emmanuel Awe</h3>
+                    <p>Cybersecurity Engineer & AI Builder</p>
+                    <p class="muted">Building defensible systems, not just theory</p>
+                </div>
+                <div class="footer-links">
+                    <a href="mailto:hello@cocofelon.lol">📧 Contact</a>
+                    <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener noreferrer">💻 GitHub</a>
+                    <a href="../../index.html#certifications">📜 Certifications</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with 💝 and pure HTML/CSS/JS • cocofelon.lol</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Animation for content elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentElements = document.querySelectorAll('.article-content > *');
+            
+            contentElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100 + (index * 50));
+            });
+        });
+    </script>
+</body>
+</html>
