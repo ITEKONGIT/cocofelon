@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COCOFELON — Transposer Panel</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --glass: rgba(18, 18, 30, 0.7);
+      --border: rgba(255, 255, 255, 0.06);
+      --text: #c8c8d4;
+      --text-muted: #6b6b7b;
+      --accent: #e63946;
+      --accent-glow: rgba(230, 57, 70, 0.3);
+      --green: #2ecc71;
+      --amber: #f39c12;
+      --font-mono: 'Courier New', monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header Bar */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .header-brand {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: var(--text);
+      text-transform: uppercase;
+    }
+
+    .header-brand span {
+      color: var(--accent);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      margin-right: 8px;
+      display: inline-block;
+    }
+
+    .status-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* Main Split */
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Editor Panel */
+    .editor-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+    }
+
+    .panel-header {
+      padding: 10px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-badge {
+      background: var(--accent-glow);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+    }
+
+    .editor {
+      flex: 1;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.7;
+      padding: 24px;
+      border: none;
+      resize: none;
+      outline: none;
+    }
+
+    .editor::placeholder {
+      color: var(--text-muted);
+      opacity: 0.4;
+    }
+
+    .editor:focus {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    /* Preview Panel */
+    .preview-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+    }
+
+    .preview-content {
+      flex: 1;
+      padding: 32px;
+      overflow-y: auto;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .preview-content h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .preview-content .meta {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .preview-content .meta-chip {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 3px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .meta-chip.series {
+      background: rgba(230, 57, 70, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(230, 57, 70, 0.2);
+    }
+
+    .meta-chip.difficulty {
+      background: rgba(243, 156, 18, 0.1);
+      color: var(--amber);
+      border: 1px solid rgba(243, 156, 18, 0.2);
+    }
+
+    .meta-chip.part {
+      background: rgba(46, 204, 113, 0.1);
+      color: var(--green);
+      border: 1px solid rgba(46, 204, 113, 0.2);
+    }
+
+    /* Glass Terminal Block */
+    .preview-content .terminal-block {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .preview-content .terminal-block::before {
+      content: attr(data-lang);
+      position: absolute;
+      top: -10px;
+      right: 12px;
+      background: var(--surface);
+      padding: 2px 10px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      border-radius: 3px;
+      border: 1px solid var(--border);
+    }
+
+    .preview-content .terminal-block code {
+      color: #2ecc71;
+    }
+
+    /* Redacted Text */
+    .preview-content .redacted-block {
+      background: #1a1a1a;
+      color: #1a1a1a;
+      padding: 2px 6px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: color 0.2s;
+      user-select: none;
+    }
+
+    .preview-content .redacted-block.revealed {
+      color: var(--accent);
+      background: rgba(230, 57, 70, 0.1);
+    }
+
+    /* Image placeholder */
+    .preview-content .image-placeholder {
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      padding: 32px;
+      text-align: center;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      margin: 20px 0;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+    }
+
+    /* Footer Bar */
+    .footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .footer-info {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+      backdrop-filter: blur(12px);
+    }
+
+    .btn:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn.primary:hover {
+      background: #c62835;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Drag & drop overlay */
+    .drop-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 15, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      border: 2px dashed var(--accent);
+      margin: 20px;
+      border-radius: 12px;
+    }
+
+    .drop-overlay.active {
+      display: flex;
+    }
+
+    .drop-message {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .toast.error {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <!-- Drop overlay for images -->
+  <div class="drop-overlay" id="dropOverlay">
+    <div class="drop-message">⬇ DROP IMAGES HERE</div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-brand">COCO<span>FELON</span> <span style="color:var(--text-muted);font-size:10px;">TRANSPOSER</span></div>
+    <div class="header-actions">
+      <span class="status-dot"></span>
+      <span class="status-text">LOCALHOST</span>
+    </div>
+  </div>
+
+  <!-- Main Split -->
+  <div class="main">
+    <!-- Editor -->
+    <div class="editor-panel">
+      <div class="panel-header">
+        <span>📝 RAW INPUT</span>
+        <span class="panel-badge" id="charCount">0</span>
+      </div>
+      <textarea 
+        class="editor" 
+        id="editor" 
+        placeholder="---
+title: My Post
+series: Series Name
+part: 1
+difficulty: Advanced
+---
+
+Start writing here...
+
+[code:bash]
+your code here
+[/code]
+
+[image: screenshot.png]
+Caption: Image description
+
+||Redacted text goes here||"
+        spellcheck="false"
+      ></textarea>
+    </div>
+
+    <!-- Preview -->
+    <div class="preview-panel">
+      <div class="panel-header">
+        <span>👁 LIVE PREVIEW</span>
+        <span class="panel-badge" style="background:rgba(46,204,113,0.1);color:var(--green);">AUTO</span>
+      </div>
+      <div class="preview-content" id="preview"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-info" id="footerInfo">Ready</div>
+    <div class="btn-group">
+      <button class="btn" onclick="clearEditor()">Clear</button>
+      <button class="btn" onclick="copyMarkdown()">Copy MD</button>
+      <button class="btn primary" onclick="downloadPost()">Download Files</button>
+    </div>
+  </div>
+
+  <script>
+    const editor = document.getElementById('editor');
+    const preview = document.getElementById('preview');
+    const charCount = document.getElementById('charCount');
+    const footerInfo = document.getElementById('footerInfo');
+    const dropOverlay = document.getElementById('dropOverlay');
+    const toast = document.getElementById('toast');
+
+    // Live preview update
+    editor.addEventListener('input', updatePreview);
+    
+    // Drag and drop for images
+    document.addEventListener('dragenter', (e) => {
+      e.preventDefault();
+      dropOverlay.classList.add('active');
+    });
+
+    dropOverlay.addEventListener('dragover', (e) => e.preventDefault());
+    
+    dropOverlay.addEventListener('dragleave', () => {
+      dropOverlay.classList.remove('active');
+    });
+
+    dropOverlay.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropOverlay.classList.remove('active');
+      
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+      
+      files.forEach(file => {
+        const tag = `[image: ${file.name}]`;
+        const cursorPos = editor.selectionStart;
+        const textBefore = editor.value.substring(0, cursorPos);
+        const textAfter = editor.value.substring(cursorPos);
+        
+        editor.value = textBefore + tag + '\nCaption: ' + textAfter;
+        editor.selectionStart = cursorPos + tag.length + 1;
+        editor.selectionEnd = cursorPos + tag.length + 1;
+      });
+      
+      updatePreview();
+      showToast(`📎 ${files.length} image(s) added`, 'success');
+    });
+
+    // Paste handler for Word content
+    editor.addEventListener('paste', (e) => {
+      const clipboardData = e.clipboardData;
+      const items = clipboardData.items;
+      
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          e.preventDefault();
+          const blob = item.getAsFile();
+          const tag = `[image: pasted-image-${Date.now()}.png]`;
+          const cursorPos = editor.selectionStart;
+          const textBefore = editor.value.substring(0, cursorPos);
+          const textAfter = editor.value.substring(cursorPos);
+          
+          editor.value = textBefore + tag + '\nCaption: Pasted image' + textAfter;
+          updatePreview();
+          showToast('🖼️ Image pasted — save file to preserve it', 'success');
+          return;
+        }
+      }
+    });
+
+    function updatePreview() {
+      const raw = editor.value;
+      charCount.textContent = raw.length;
+      
+      // Simple client-side parsing for preview
+      const parsed = parsePreview(raw);
+      preview.innerHTML = parsed;
+      
+      // Attach redaction reveal handlers
+      preview.querySelectorAll('.redacted-block').forEach(el => {
+        el.addEventListener('click', () => el.classList.toggle('revealed'));
+      });
+      
+      footerInfo.textContent = `Words: ${raw.split(/\s+/).filter(w => w.length).length} | Chars: ${raw.length}`;
+    }
+
+    function parsePreview(raw) {
+      let html = '';
+      const clean = raw.replace(/\r\n/g, '\n');
+      
+      // Extract frontmatter
+      const fmMatch = clean.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+      
+      let frontmatter = {};
+      let body = clean;
+      
+      if (fmMatch) {
+        fmMatch[1].split('\n').forEach(line => {
+          const [key, ...rest] = line.split(':');
+          if (key && rest.length) {
+            frontmatter[key.trim()] = rest.join(':').trim();
+          }
+        });
+        body = fmMatch[2];
+      }
+
+      // Title
+      if (frontmatter.title) {
+        html += `<h1>${escapeHtml(frontmatter.title)}</h1>`;
+      }
+      
+      // Meta chips
+      if (frontmatter.series || frontmatter.difficulty || frontmatter.part) {
+        html += '<div class="meta">';
+        if (frontmatter.series) {
+          html += `<span class="meta-chip series">📚 ${escapeHtml(frontmatter.series)}</span>`;
+        }
+        if (frontmatter.part) {
+          html += `<span class="meta-chip part">Part ${escapeHtml(frontmatter.part)}</span>`;
+        }
+        if (frontmatter.difficulty) {
+          html += `<span class="meta-chip difficulty">⚡ ${escapeHtml(frontmatter.difficulty)}</span>`;
+        }
+        html += '</div>';
+      }
+
+      // Process body
+      let processed = escapeHtml(body);
+      
+      // Bold
+      processed = processed.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      
+      // Code blocks
+      processed = processed.replace(
+        /\[code:(\w*)\]\n([\s\S]*?)\[\/code\]/g,
+        (_, lang, code) => {
+          return `<div class="terminal-block" data-lang="${lang || 'code'}"><code>${escapeHtml(code.trim())}</code></div>`;
+        }
+      );
+      
+      // Images
+      processed = processed.replace(
+        /\[image:\s*([^\]]+)\]\n?(?:Caption:\s*(.+))?/g,
+        (_, filename, caption) => {
+          const cap = caption ? caption.trim() : filename.trim();
+          return `<div class="image-placeholder">🖼️ ${escapeHtml(cap)}<br><small>${escapeHtml(filename.trim())}</small></div>`;
+        }
+      );
+      
+      // Redacted
+      processed = processed.replace(
+        /\|\|(.+?)\|\|/g,
+        (_, text) => `<span class="redacted-block">${escapeHtml(text)}</span>`
+      );
+      
+      // Line breaks
+      processed = processed.replace(/\n\n/g, '</p><p>');
+      processed = '<p>' + processed + '</p>';
+      
+      html += processed;
+      
+      return html;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function clearEditor() {
+      editor.value = '';
+      updatePreview();
+      showToast('🗑️ Editor cleared', 'success');
+    }
+
+    function copyMarkdown() {
+      const raw = editor.value;
+      // Simulate our parser output format
+      const parsed = parsePreviewForCopy(raw);
+      navigator.clipboard.writeText(parsed).then(() => {
+        showToast('📋 Markdown copied to clipboard', 'success');
+      });
+    }
+
+    function parsePreviewForCopy(raw) {
+      // Simple conversion to markdown for clipboard
+      let md = raw;
+      md = md.replace(/\[code:(\w*)\]\n([\s\S]*?)\[\/code\]/g, (_, lang, code) => {
+        return '```' + lang + '\n' + code.trim() + '\n```';
+      });
+      md = md.replace(/\[image:\s*([^\]]+)\]\n?(?:Caption:\s*(.+))?/g, (_, filename, caption) => {
+        return '![' + (caption ? caption.trim() : filename.trim()) + '](./images/' + filename.trim() + ')';
+      });
+      md = md.replace(/\|\|(.+?)\|\|/g, '████████████');
+      return md;
+    }
+
+    function downloadPost() {
+      const raw = editor.value;
+      const clean = raw.replace(/\r\n/g, '\n');
+      const fmMatch = clean.match(/^---\n([\s\S]*?)\n---\n/);
+      
+      let filename = 'blog-post';
+      if (fmMatch) {
+        const titleLine = fmMatch[1].split('\n').find(l => l.startsWith('title:'));
+        if (titleLine) {
+          filename = titleLine.split(':')[1].trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '');
+        }
+      }
+      
+      const blob = new Blob([raw], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${filename}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      showToast(`💾 Saved as ${filename}.txt — drop into incoming/ and run node transpose.js`, 'success');
+    }
+
+    function showToast(message, type) {
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    // Initial preview
+    updatePreview();
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        downloadPost();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,17 +1,456 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+  <main class="astral-hub">
+    
+    <!-- ===== IDENTITY BLOCK — CALLIGRAPHIC ASSEMBLY ===== -->
+    <header class="identity-core">
+      <div class="calligraphy-mark" id="calligraphy-mark">
+        <span class="stroke">C</span>
+        <span class="stroke">O</span>
+        <span class="stroke">C</span>
+        <span class="stroke">O</span>
+        <span class="stroke gap"></span>
+        <span class="stroke outline">F</span>
+        <span class="stroke outline">E</span>
+        <span class="stroke outline">L</span>
+        <span class="stroke outline">O</span>
+        <span class="stroke outline">N</span>
+      </div>
+      <p class="ident-tagline">// Exploring the edges of what systems allow</p>
+    </header>
+
+    <!-- ===== PORTAL GRID ===== -->
+    <nav class="hud-grid">
+      
+      <a href="/blog" class="hud-portal">
+        <div class="portal-scan"></div>
+        <div class="portal-glow"></div>
+        <div class="portal-header">
+          <span class="portal-id">01 · DOSSIER</span>
+          <span class="portal-arrow">↗</span>
+        </div>
+        <h3 class="portal-title">Field Reports</h3>
+        <p class="portal-data">Stories from inside the wire</p>
+      </a>
+
+      <a href="/projects" class="hud-portal">
+        <div class="portal-scan"></div>
+        <div class="portal-glow"></div>
+        <div class="portal-header">
+          <span class="portal-id">02 · ARSENAL</span>
+          <span class="portal-arrow">↗</span>
+        </div>
+        <h3 class="portal-title">Projects</h3>
+        <p class="portal-data">Things I've built and broken</p>
+      </a>
+
+      <a href="/experience" class="hud-portal">
+        <div class="portal-scan"></div>
+        <div class="portal-glow"></div>
+        <div class="portal-header">
+          <span class="portal-id">03 · HISTORY</span>
+          <span class="portal-arrow">↗</span>
+        </div>
+        <h3 class="portal-title">Experience</h3>
+        <p class="portal-data">Where I've operated</p>
+      </a>
+
+      <a href="/capabilities" class="hud-portal">
+        <div class="portal-scan"></div>
+        <div class="portal-glow"></div>
+        <div class="portal-header">
+          <span class="portal-id">04 · SKILLS</span>
+          <span class="portal-arrow">↗</span>
+        </div>
+        <h3 class="portal-title">Capabilities</h3>
+        <p class="portal-data">What I can do and how</p>
+      </a>
+
+      <a href="/about" class="hud-portal">
+        <div class="portal-scan"></div>
+        <div class="portal-glow"></div>
+        <div class="portal-header">
+          <span class="portal-id">05 · ABOUT</span>
+          <span class="portal-arrow">↗</span>
+        </div>
+        <h3 class="portal-title">Operator</h3>
+        <p class="portal-data">Who's behind the terminal</p>
+      </a>
+
+      <a href="mailto:hello@cocofelon.lol" class="hud-portal">
+        <div class="portal-scan"></div>
+        <div class="portal-glow"></div>
+        <div class="portal-header">
+          <span class="portal-id">06 · CONTACT</span>
+          <span class="portal-arrow">↗</span>
+        </div>
+        <h3 class="portal-title">Let's Talk</h3>
+        <p class="portal-data">Open to the right conversations</p>
+      </a>
+
+    </nav>
+  </main>
+</Layout>
+
+<style>
+  /* ============================================================
+     HUB CONTAINER
+     ============================================================ */
+  .astral-hub {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 5rem 2rem 3rem;
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* ============================================================
+     IDENTITY BLOCK — CALLIGRAPHIC COCOFELON
+     ============================================================ */
+  .identity-core {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .calligraphy-mark {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3.5rem, 9vw, 7rem);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    position: relative;
+  }
+
+  .stroke {
+    display: inline-block;
+    position: relative;
+  }
+
+  /* COCO — solid white with subtle glow */
+  .calligraphy-mark .stroke:not(.outline):not(.gap) {
+    color: #FFFFFF;
+    font-weight: 800;
+    text-shadow: 0 0 80px rgba(255, 255, 255, 0.2);
+  }
+
+  /* FELON — cyan outline, no fill */
+  .stroke.outline {
+    color: transparent;
+    font-weight: 800;
+    -webkit-text-stroke: 2.5px rgba(0, 240, 255, 0.85);
+    text-stroke: 2.5px rgba(0, 240, 255, 0.85);
+    text-shadow: 0 0 60px rgba(0, 240, 255, 0.25);
+  }
+
+  .stroke.gap {
+    width: 0.55em;
+  }
+
+  .ident-tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(0, 240, 255, 0.7);
+    letter-spacing: 0.22em;
+    margin-top: 0.6rem;
+  }
+
+  /* ============================================================
+     PORTAL GRID
+     ============================================================ */
+  .hud-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+  }
+
+  /* ============================================================
+     PORTAL CARD – CLEAR-CUT UI/UX BUTTON
+     ============================================================ */
+  .hud-portal {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1.25rem;
+    background: rgba(2, 2, 8, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-decoration: none;
+    overflow: hidden;
+    transition: background 0.4s ease, border-color 0.4s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  .portal-scan {
+    position: absolute;
+    top: 0;
+    left: 5%;
+    width: 90%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.35), transparent);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .portal-glow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at 50% 120%, rgba(0, 240, 255, 0.07), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  .portal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .portal-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    font-weight: 500;
+    color: rgba(0, 240, 255, 0.5);
+    letter-spacing: 0.2em;
+    transition: color 0.4s ease;
+  }
+
+  .portal-arrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(0, 240, 255, 0.7);
+    opacity: 0;
+    transform: translate(-3px, 3px);
+    transition: all 0.4s ease;
+  }
+
+  .portal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: rgba(226, 232, 240, 0.95);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.4rem;
+    position: relative;
+    z-index: 1;
+    transition: color 0.4s ease;
+  }
+
+  .portal-data {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 300;
+    color: rgba(136, 146, 176, 0.8);
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============================================================
+     HOVER STATE
+     ============================================================ */
+  .hud-portal:hover {
+    background: rgba(0, 240, 255, 0.05);
+    border-color: rgba(0, 240, 255, 0.35);
+    transform: translateY(-3px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  .hud-portal:hover .portal-scan {
+    opacity: 1;
+  }
+
+  .hud-portal:hover .portal-glow {
+    opacity: 1;
+  }
+
+  .hud-portal:hover .portal-id {
+    color: #00F0FF;
+  }
+
+  .hud-portal:hover .portal-title {
+    color: #FFFFFF;
+  }
+
+  .hud-portal:hover .portal-arrow {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 768px) {
+    .astral-hub {
+      padding: 4rem 1rem 2rem;
+    }
+
+    .calligraphy-mark {
+      font-size: clamp(3rem, 8vw, 5rem);
+    }
+
+    .identity-core {
+      margin-bottom: 2rem;
+    }
+
+    .hud-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hud-portal {
+      padding: 1.25rem 1rem;
+    }
+
+    .portal-title {
+      font-size: 0.85rem;
+    }
+
+    .portal-data {
+      font-size: 0.56rem;
+    }
+
+    .portal-arrow {
+      opacity: 0.4;
+      transform: translate(0, 0);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .calligraphy-mark {
+      font-size: clamp(2.2rem, 7vw, 3.5rem);
+    }
+
+    .identity-core {
+      margin-bottom: 1.5rem;
+    }
+
+    .hud-portal {
+      padding: 1rem 0.85rem;
+    }
+
+    .portal-header {
+      margin-bottom: 1rem;
+    }
+
+    .portal-id {
+      font-size: 0.45rem;
+    }
+
+    .portal-title {
+      font-size: 0.75rem;
+    }
+
+    .portal-data {
+      font-size: 0.52rem;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  const allStrokes = document.querySelectorAll('.stroke:not(.gap)');
+  const gap = document.querySelector('.stroke.gap');
+  const tagline = document.querySelector('.ident-tagline');
+  const portals = document.querySelectorAll('.hud-portal');
+
+  allStrokes.forEach((stroke) => {
+    const randX = (Math.random() - 0.5) * 400;
+    const randY = (Math.random() - 0.5) * 300 - 100;
+    const randRotate = (Math.random() - 0.5) * 220;
+    const randScale = 0.15 + Math.random() * 0.4;
+
+    gsap.set(stroke, {
+      x: randX,
+      y: randY,
+      rotation: randRotate,
+      scale: randScale,
+      opacity: 0,
+      filter: 'blur(16px)',
+    });
+  });
+
+  gsap.set(gap, { width: 0 });
+  gsap.set(tagline, { opacity: 0, y: 10 });
+
+  const master = gsap.timeline({ defaults: { ease: 'expo.out' }, delay: 0.3 });
+
+  allStrokes.forEach((stroke, i) => {
+    master.to(stroke, {
+      x: 0,
+      y: 0,
+      rotation: 0,
+      scale: 1,
+      opacity: 1,
+      filter: 'blur(0px)',
+      duration: 0.6,
+      ease: 'back.out(1.6)',
+    }, i * 0.04);
+  });
+
+  master.to(gap, {
+    width: '0.55em',
+    duration: 0.3,
+    ease: 'power3.out',
+  }, '-=0.1');
+
+  master.to('.calligraphy-mark', {
+    scale: 1.05,
+    duration: 0.2,
+    ease: 'power2.out',
+  });
+
+  master.to('.calligraphy-mark', {
+    scale: 1,
+    duration: 0.8,
+    ease: 'elastic.out(1, 0.3)',
+  });
+
+  master.to(tagline, {
+    opacity: 1,
+    y: 0,
+    duration: 0.6,
+  }, '-=0.4');
+
+  gsap.set(portals, { opacity: 0, filter: 'blur(8px)', y: 20 });
+
+  master.fromTo(portals,
+    { opacity: 0, filter: 'blur(8px)', y: 20 },
+    { opacity: 1, filter: 'blur(0px)', y: 0, duration: 1, stagger: 0.06, ease: 'expo.out' },
+    '-=0.1'
+  );
+
+  master.call(() => {
+    portals.forEach((portal, i) => {
+      gsap.to(portal, {
+        y: -5,
+        duration: 3 + (i % 3) * 0.8,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        delay: i * 0.2,
+        overwrite: 'auto',
+      });
+    });
+  }, null, '+=0.3');
+</script>

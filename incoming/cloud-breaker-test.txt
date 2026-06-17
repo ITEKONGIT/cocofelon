@@ -1,0 +1,24 @@
+title: CWL Cloud Breaker — Initial Access
+series: Cloud Breaker Chronicles
+part: 1
+difficulty: Intermediate
+
+When you find an exposed AWS credential in a public repo, the game begins.
+
+[code:bash]
+# Enumerate the account
+aws sts get-caller-identity --profile found-creds
+
+# List all S3 buckets
+aws s3 ls --profile found-creds
+
+# Check IAM permissions
+aws iam list-attached-user-policies --user-name target-user --profile found-creds
+[/code]
+
+The user had AdministratorAccess attached. Game over.
+
+[image: aws-admin-panel.png]
+Caption: AWS console showing full admin access after credential compromise
+
+||The exact repository where the credentials were found cannot be disclosed at this time||

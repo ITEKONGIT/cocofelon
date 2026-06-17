@@ -1,0 +1,103 @@
+---
+// Nav.astro – crystalline fixed navigation
+---
+
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">COCOFELON</a>
+    <div class="nav-links">
+      <a href="/blog" class="nav-link">Dossier</a>
+      <a href="/projects" class="nav-link">Arsenal</a>
+      <a href="/experience" class="nav-link">History</a>
+      <a href="/capabilities" class="nav-link">Signal</a>
+      <a href="/about" class="nav-link">About</a>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding: 0.75rem 2rem;
+    background: rgba(3, 3, 5, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    color: var(--stardust);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .nav-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ash);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-link:hover {
+    color: var(--cyan);
+  }
+
+  @media (max-width: 600px) {
+    .nav {
+      padding: 0.75rem 1rem;
+    }
+    .nav-links {
+      gap: 1.25rem;
+    }
+    .nav-link {
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  const nav = document.getElementById('nav');
+  let lastScroll = 0;
+
+  ScrollTrigger.create({
+    start: 'top -80',
+    onUpdate: (self) => {
+      const currentScroll = self.scroll();
+      if (currentScroll > lastScroll && currentScroll > 80) {
+        gsap.to(nav, { y: -100, duration: 0.3, ease: 'power2.in' });
+      } else {
+        gsap.to(nav, { y: 0, duration: 0.3, ease: 'power2.out' });
+      }
+      lastScroll = currentScroll;
+    },
+  });
+</script>

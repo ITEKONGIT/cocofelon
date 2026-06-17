@@ -1,0 +1,36 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: string;
+}
+
+const {
+  title = 'COCOFELON — Offensive Security Engineer',
+  description = 'Technical breakdowns of real-world attack chains, evasion techniques, and defensive engineering. By Emmanuel Awe.',
+  image = 'https://cocofelon.lol/codemechanic.png',
+  canonicalURL = 'https://cocofelon.lol',
+} = Astro.props;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+<meta name="description" content={description} />
+
+<!-- Open Graph -->
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content="website" />
+<meta property="og:image" content={image} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:site_name" content="COCOFELON" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+
+<link rel="canonical" href={canonicalURL} />
