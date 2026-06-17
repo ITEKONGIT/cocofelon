@@ -6,10 +6,7 @@ export async function getStaticPaths() {
   const posts = await getCollection('blog');
   return posts.map((post) => {
     const slug = post.data.slug || post.id.split('/').pop()?.replace(/\.md$/, '') || 'unknown';
-    return {
-      params: { slug },
-      props: { post },
-    };
+    return { params: { slug }, props: { post } };
   });
 }
 
@@ -19,8 +16,12 @@ const { Content } = await render(post);
 
 <Layout>
   <article class="transmission">
+    
+    <!-- Back link -->
+    <a href="/blog" class="post-back">← ARCHIVE</a>
+
+    <!-- Post header -->
     <header class="post-header">
-      <a href="/blog" class="post-back">← ARCHIVE</a>
       <h1 class="post-title">{post.data.title}</h1>
       <div class="post-meta">
         <span class="post-date">{post.data.date}</span>
@@ -36,38 +37,53 @@ const { Content } = await render(post);
       </div>
     </header>
 
+    <!-- Post body with rich prose -->
     <div class="prose">
       <Content />
     </div>
 
+    <!-- Series navigation (if part of a series) -->
+    {post.data.series && (
+      <nav class="series-nav">
+        <p class="series-nav-title">This article is part of <span>{post.data.series}</span></p>
+        <!-- Next/Prev would go here with dynamic logic -->
+      </nav>
+    )}
+
+    <!-- Article footer -->
     <footer class="post-footer">
-      <div class="author-pulse">
-        <span class="pulse-dot"></span>
-        <div>
-          <p class="author-name">Emmanuel Awe</p>
-          <p class="author-note">Offensive Security Engineer · All testing authorized · Findings disclosed responsibly</p>
+      <div class="author-box">
+        <div class="author-avatar">EA</div>
+        <div class="author-info">
+          <h4>Emmanuel Awe</h4>
+          <p>Offensive Security Engineer — Building defensible systems through offensive research.</p>
+          <div class="author-links">
+            <a href="mailto:hello@cocofelon.lol">Email</a>
+            <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener">GitHub</a>
+          </div>
         </div>
       </div>
     </footer>
+
   </article>
 </Layout>
 
 <style>
+  /* ============================================================
+     TRANSMISSION CONTAINER
+     ============================================================ */
   .transmission {
     min-height: 100vh;
-    max-width: 680px;
+    max-width: 780px;
     margin: 0 auto;
-    padding: 6rem 2rem 4rem;
+    padding: 7rem 2rem 4rem;
     position: relative;
     z-index: 10;
   }
 
-  .post-header {
-    margin-bottom: 3rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding-bottom: 2rem;
-  }
-
+  /* ============================================================
+     BACK LINK
+     ============================================================ */
   .post-back {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.6rem;
@@ -79,9 +95,15 @@ const { Content } = await render(post);
     margin-bottom: 2rem;
     transition: color 0.3s;
   }
+  .post-back:hover { color: var(--cyan); }
 
-  .post-back:hover {
-    color: var(--cyan);
+  /* ============================================================
+     POST HEADER
+     ============================================================ */
+  .post-header {
+    margin-bottom: 3rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 2rem;
   }
 
   .post-title {
@@ -91,6 +113,7 @@ const { Content } = await render(post);
     line-height: 1.1;
     letter-spacing: -0.03em;
     margin-bottom: 1rem;
+    color: var(--stardust);
   }
 
   .post-meta {
@@ -104,12 +127,10 @@ const { Content } = await render(post);
     color: var(--ash);
   }
 
-  .post-date {
-    color: var(--cyan);
-  }
-
-  .post-series {
-    color: rgba(168, 85, 247, 0.7);
+  .post-date { color: var(--cyan); }
+  
+  .post-series { 
+    color: rgba(168, 85, 247, 0.7); 
   }
 
   .post-difficulty {
@@ -126,51 +147,370 @@ const { Content } = await render(post);
     opacity: 0.6;
   }
 
+  /* ============================================================
+     PROSE — ENRICHED TYPOGRAPHY
+     ============================================================ */
+  .prose {
+    font-family: 'Lexend', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: #cbd5e1;
+    font-weight: 300;
+  }
+
+  .prose h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--stardust);
+    margin: 3rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+  }
+
+  .prose h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--cyan);
+    margin: 2.5rem 0 0.75rem;
+  }
+
+  .prose h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--stardust);
+    margin: 1.5rem 0 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .prose p {
+    margin-bottom: 1.5rem;
+  }
+
+  .prose strong {
+    color: var(--stardust);
+    font-weight: 600;
+  }
+
+  .prose em {
+    color: var(--cyan);
+    font-style: italic;
+  }
+
+  .prose a {
+    color: var(--cyan);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.3s;
+  }
+  .prose a:hover { color: #fff; }
+
+  /* Blockquotes */
+  .prose blockquote {
+    margin: 2rem 0;
+    padding: 1.25rem 1.5rem;
+    background: rgba(0, 240, 255, 0.03);
+    border-left: 3px solid var(--cyan);
+    font-style: italic;
+    color: var(--ash);
+  }
+
+  /* Inline code */
+  .prose code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    background: rgba(0, 240, 255, 0.08);
+    color: var(--cyan);
+    padding: 0.15rem 0.4rem;
+    border-radius: 2px;
+  }
+
+  /* Code blocks — with terminal-style header */
+  .prose pre {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0;
+    padding: 0;
+    margin: 2rem 0;
+    overflow: hidden;
+  }
+
+  .prose pre code {
+    display: block;
+    padding: 1.5rem;
+    background: none;
+    color: #cbd5e1;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+
+  /* Attempt to detect language from class and add header — 
+     this works if code fences have language */
+  .prose pre[class*="language-"]::before,
+  .prose pre code[class*="language-"] {
+    /* handled by code's class */
+  }
+
+  /* For code blocks generated by markdown, we add a subtle top border accent */
+  .prose pre {
+    position: relative;
+    border-top: 1px solid rgba(0, 240, 255, 0.2);
+  }
+
+  /* Lists */
+  .prose ul, .prose ol {
+    margin: 1.5rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.5rem;
+    color: #cbd5e1;
+  }
+
+  .prose li::marker {
+    color: var(--cyan);
+  }
+
+  /* Tables */
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+  }
+
+  .prose th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--cyan);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .prose td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 0.9rem;
+    color: #cbd5e1;
+  }
+
+  /* Images */
+  .prose img {
+    max-width: 100%;
+    height: auto;
+    margin: 2rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Redacted text */
+  .prose .redacted {
+    background: rgba(255, 255, 255, 0.05);
+    color: transparent;
+    padding: 0.1rem 0.3rem;
+    cursor: pointer;
+    transition: color 0.3s;
+    user-select: none;
+  }
+  .prose .redacted:hover {
+    color: var(--stardust);
+    background: rgba(0, 240, 255, 0.1);
+  }
+
+  /* ============================================================
+     CALLOUT BOXES (custom classes from old site)
+     ============================================================ */
+  .prose .callout {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(0, 240, 255, 0.02));
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .prose .callout-danger {
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.08), rgba(255, 107, 157, 0.02));
+    border-color: rgba(255, 107, 157, 0.3);
+  }
+
+  .prose .callout-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--cyan);
+    margin-bottom: 0.75rem;
+  }
+
+  .prose .callout-danger .callout-title {
+    color: #ff6b9d;
+  }
+
+  /* ============================================================
+     SEVERITY BADGES
+     ============================================================ */
+  .prose .severity {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.15rem 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .prose .severity-critical {
+    background: linear-gradient(135deg, #ff4757, #ff6b9d);
+    color: white;
+  }
+
+  .prose .severity-high {
+    background: linear-gradient(135deg, #ff6b9d, #a855f7);
+    color: white;
+  }
+
+  .prose .severity-medium {
+    background: linear-gradient(135deg, #a855f7, #00d4ff);
+    color: white;
+  }
+
+  /* ============================================================
+     VULNERABILITY CARDS
+     ============================================================ */
+  .prose .vuln-card {
+    background: rgba(2, 2, 8, 0.45);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .prose .vuln-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .prose .vuln-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--stardust);
+  }
+
+  /* ============================================================
+     SERIES NAVIGATION
+     ============================================================ */
+  .series-nav {
+    margin: 3rem 0;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(2, 2, 8, 0.3);
+    backdrop-filter: blur(12px);
+  }
+
+  .series-nav-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ash);
+    margin-bottom: 0.5rem;
+  }
+
+  .series-nav-title span {
+    color: var(--cyan);
+  }
+
+  /* ============================================================
+     ARTICLE FOOTER — AUTHOR BOX
+     ============================================================ */
   .post-footer {
     margin-top: 5rem;
     padding-top: 2rem;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
 
-  .author-pulse {
+  .author-box {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: rgba(2, 2, 8, 0.45);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .pulse-dot {
-    width: 8px;
-    height: 8px;
-    background: var(--cyan);
+  .author-avatar {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--cyan), rgba(0, 240, 255, 0.3));
     border-radius: 50%;
-    box-shadow: 0 0 12px var(--cyan);
-    animation: pulse 2s infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #030305;
     flex-shrink: 0;
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.3; transform: scale(1.6); }
-  }
-
-  .author-name {
+  .author-info h4 {
     font-family: 'Syne', sans-serif;
+    font-size: 1rem;
     font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 0.15rem;
+    color: var(--stardust);
+    margin-bottom: 0.25rem;
   }
 
-  .author-note {
+  .author-info p {
     font-family: 'Lexend', sans-serif;
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     color: var(--ash);
-    font-style: italic;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.5;
     font-weight: 300;
+    font-style: italic;
   }
 
+  .author-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .author-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--cyan);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .author-links a:hover {
+    color: #fff;
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
   @media (max-width: 768px) {
     .transmission {
-      padding: 4rem 1.25rem 3rem;
+      padding: 5rem 1.25rem 3rem;
+    }
+    .author-box {
+      flex-direction: column;
+      text-align: center;
     }
   }
 </style>
