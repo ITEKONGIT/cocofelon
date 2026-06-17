@@ -1,0 +1,203 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout>
+  <div class="page">
+    <header class="page-header">
+      <p class="page-tag">OPERATIONAL HISTORY</p>
+      <h1 class="page-title">Experience</h1>
+      <p class="page-sub">Where I've operated and what I've learned</p>
+    </header>
+
+    <div class="data-rows">
+      <div class="data-row">
+        <div class="data-row-date">2024 — PRESENT</div>
+        <div class="data-row-content">
+          <h3 class="data-row-title">Exploit Forge (EXF)</h3>
+          <p class="data-row-role">Offensive Security Engineer</p>
+          <p class="data-row-desc">
+            Commanding full-scope red team operations, targeted vulnerability research, and advanced 
+            penetration testing engagements. Beyond active exploitation, spearheaded the development 
+            of autonomous, AI-powered operational infrastructure. Engineered custom LLM-driven workflows 
+            and Zapier integrations to completely automate lead generation and digital footprinting—effectively 
+            synthesizing an entire autonomous division to scale operational reach.
+          </p>
+          <div class="data-row-tags">
+            <span>PENETRATION TESTING</span><span>RED TEAM</span><span>AI AUTOMATION</span><span>VULNERABILITY RESEARCH</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-row">
+        <div class="data-row-date">JAN — JUN 2023</div>
+        <div class="data-row-content">
+          <h3 class="data-row-title">Platview Nigeria</h3>
+          <p class="data-row-role">Cybersecurity Analyst</p>
+          <p class="data-row-desc">
+            Executed rigorous enterprise security assessments and continuous threat intelligence monitoring. 
+            Tasked with the deployment and tuning of defensive countermeasures against active intrusion attempts. 
+            Forged a deep, foundational understanding of enterprise-scale incident response, network defense, 
+            and adversary behavior analysis directly from the defensive (Blue Team) perspective.
+          </p>
+          <div class="data-row-tags">
+            <span>SECURITY ANALYSIS</span><span>THREAT MONITORING</span><span>INCIDENT RESPONSE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-row">
+        <div class="data-row-date">2021 — PRESENT</div>
+        <div class="data-row-content">
+          <h3 class="data-row-title">Independent Practice</h3>
+          <p class="data-row-role">Security Researcher & Consultant</p>
+          <p class="data-row-desc">
+            Directing independent adversarial research and bespoke weaponization. Architecting custom 
+            evasion tools and shellcode loaders designed to subvert modern endpoint protection systems. 
+            Providing high-level offensive security consulting to private clients, while simultaneously 
+            directing an intensive, tactical mentorship program to forge 20+ aspiring engineers into 
+            highly capable security operators.
+          </p>
+          <div class="data-row-tags">
+            <span>CONSULTING</span><span>VULNERABILITY RESEARCH</span><span>MENTORSHIP</span><span>TOOL DEVELOPMENT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 7rem 2rem 4rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .page-header {
+    margin-bottom: 3rem;
+  }
+
+  .page-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    color: var(--cyan);
+    margin-bottom: 1rem;
+  }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+    color: var(--stardust);
+  }
+
+  .page-sub {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ash);
+    font-weight: 300;
+  }
+
+  .data-rows {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .data-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 2rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+
+  .data-row:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .data-row:hover {
+    background: rgba(0, 240, 255, 0.015);
+    border-bottom-color: rgba(0, 240, 255, 0.1);
+  }
+
+  .data-row-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--cyan);
+    padding-top: 0.25rem;
+  }
+
+  .data-row-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .data-row-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--stardust);
+    transition: color 0.3s;
+  }
+
+  .data-row:hover .data-row-title {
+    color: var(--cyan);
+  }
+
+  .data-row-role {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.9rem;
+    color: var(--ash);
+    font-weight: 400;
+  }
+
+  .data-row-desc {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.9rem;
+    color: #8b8b9a;
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  .data-row-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .data-row-tags span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ash);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.2rem 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .page {
+      padding: 5rem 1.25rem 3rem;
+    }
+    .data-row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .data-row-date {
+      padding-top: 0;
+    }
+  }
+</style>

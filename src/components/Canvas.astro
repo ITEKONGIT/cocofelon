@@ -1,0 +1,208 @@
+---
+// Canvas.astro — Astral Tunnel particle field
+---
+
+<canvas id="bg-canvas" class="fixed inset-0 -z-10"></canvas>
+
+<script>
+  import * as THREE from 'three';
+
+  const canvas = document.getElementById('bg-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 200);
+  camera.position.z = 0;
+
+  // Scroll tracking for warp speed
+  let scrollVelocity = 0;
+  let targetVelocity = 0;
+  let lastScrollY = window.scrollY;
+  let baseSpeed = 0.3;
+  let currentSpeed = baseSpeed;
+
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+    const delta = currentScrollY - lastScrollY;
+    targetVelocity = Math.abs(delta) * 0.15;
+    lastScrollY = currentScrollY;
+  });
+
+  // Mouse tracking
+  const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+  document.addEventListener('mousemove', (e) => {
+    mouse.targetX = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse.targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+  });
+
+  // Create glow texture
+  function createGlowTexture(r, g, b) {
+    const size = 128;
+    const c = document.createElement('canvas');
+    c.width = size;
+    c.height = size;
+    const ctx = c.getContext('2d');
+    const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    gradient.addColorStop(0, `rgba(${r},${g},${b},1)`);
+    gradient.addColorStop(0.05, `rgba(${r},${g},${b},0.8)`);
+    gradient.addColorStop(0.3, `rgba(${r},${g},${b},0.15)`);
+    gradient.addColorStop(1, 'transparent');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    return new THREE.CanvasTexture(c);
+  }
+
+  const cyanGlow = createGlowTexture(0, 240, 255);
+  const purpleGlow = createGlowTexture(75, 0, 130);
+
+  // Tunnel parameters
+  const particleCount = 1200;
+  const tunnelLength = 80;
+  const tunnelRadius = 12;
+
+  const geometry = new THREE.BufferGeometry();
+  const positions = new Float32Array(particleCount * 3);
+  const sizes = new Float32Array(particleCount);
+  const colors = new Float32Array(particleCount * 3);
+
+  const cyan = new THREE.Color('#00F0FF');
+  const purple = new THREE.Color('#4B0082');
+  const white = new THREE.Color('#E2E8F0');
+
+  for (let i = 0; i < particleCount; i++) {
+    // Cylindrical tunnel distribution
+    const angle = Math.random() * Math.PI * 2;
+    const radius = tunnelRadius * (0.3 + Math.random() * 0.7);
+    const z = -Math.random() * tunnelLength;
+
+    positions[i * 3] = Math.cos(angle) * radius;
+    positions[i * 3 + 1] = Math.sin(angle) * radius * 0.6;
+    positions[i * 3 + 2] = z;
+
+    // Size variation — larger particles closer to camera
+    const depthFactor = (z + tunnelLength) / tunnelLength;
+    sizes[i] = (0.02 + Math.random() * 0.08) * depthFactor;
+
+    // Color gradient: cyan near center, purple at edges, white sprinkled
+    const colorMix = radius / tunnelRadius;
+    const rand = Math.random();
+    let color;
+    if (rand < 0.1) {
+      color = white.clone();
+    } else {
+      color = cyan.clone().lerp(purple, colorMix);
+    }
+    colors[i * 3] = color.r;
+    colors[i * 3 + 1] = color.g;
+    colors[i * 3 + 2] = color.b;
+  }
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+  const material = new THREE.PointsMaterial({
+    size: 0.4,
+    map: cyanGlow,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    transparent: true,
+    opacity: 0.7,
+    vertexColors: true,
+    sizeAttenuation: true,
+  });
+
+  const particles = new THREE.Points(geometry, material);
+  scene.add(particles);
+
+  // Secondary sparse bright points
+  const brightCount = 200;
+  const brightGeo = new THREE.BufferGeometry();
+  const brightPos = new Float32Array(brightCount * 3);
+  const brightSizes = new Float32Array(brightCount);
+
+  for (let i = 0; i < brightCount; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const radius = tunnelRadius * 0.2 * Math.random();
+    const z = -Math.random() * tunnelLength;
+    brightPos[i * 3] = Math.cos(angle) * radius;
+    brightPos[i * 3 + 1] = Math.sin(angle) * radius * 0.4;
+    brightPos[i * 3 + 2] = z;
+    brightSizes[i] = 0.1 + Math.random() * 0.3;
+  }
+
+  brightGeo.setAttribute('position', new THREE.BufferAttribute(brightPos, 3));
+  brightGeo.setAttribute('size', new THREE.BufferAttribute(brightSizes, 1));
+
+  const brightMat = new THREE.PointsMaterial({
+    size: 0.6,
+    map: purpleGlow,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    transparent: true,
+    opacity: 0.9,
+    color: '#E2E8F0',
+    sizeAttenuation: true,
+  });
+
+  const brightParticles = new THREE.Points(brightGeo, brightMat);
+  scene.add(brightParticles);
+
+  function onResize() {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', onResize);
+  onResize();
+
+  function animate() {
+    requestAnimationFrame(animate);
+
+    // Smooth velocity
+    scrollVelocity += (targetVelocity - scrollVelocity) * 0.05;
+    targetVelocity *= 0.92;
+    currentSpeed = baseSpeed + scrollVelocity;
+
+    // Move particles toward camera (warp speed)
+    const posArray = geometry.attributes.position.array;
+    for (let i = 0; i < particleCount; i++) {
+      posArray[i * 3 + 2] += currentSpeed * 0.06;
+      if (posArray[i * 3 + 2] > 5) {
+        posArray[i * 3 + 2] = -tunnelLength;
+      }
+    }
+    geometry.attributes.position.needsUpdate = true;
+
+    // Same for bright particles
+    const bPosArray = brightGeo.attributes.position.array;
+    for (let i = 0; i < brightCount; i++) {
+      bPosArray[i * 3 + 2] += currentSpeed * 0.08;
+      if (bPosArray[i * 3 + 2] > 5) {
+        bPosArray[i * 3 + 2] = -tunnelLength;
+      }
+    }
+    brightGeo.attributes.position.needsUpdate = true;
+
+    // FOV distortion on warp
+    const targetFOV = 75 + scrollVelocity * 3;
+    camera.fov += (targetFOV - camera.fov) * 0.05;
+    camera.updateProjectionMatrix();
+
+    // Mouse parallax
+    mouse.x += (mouse.targetX - mouse.x) * 0.02;
+    mouse.y += (mouse.targetY - mouse.y) * 0.02;
+    camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.01;
+    camera.position.y += (mouse.y * 0.3 - camera.position.y) * 0.01;
+    camera.lookAt(0, 0, -10);
+
+    // Slow rotation
+    particles.rotation.z += 0.0001;
+    brightParticles.rotation.z -= 0.00015;
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+</script>

@@ -1,0 +1,153 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout>
+  <div class="page">
+    <header class="page-header">
+      <p class="page-tag">SIGNAL INVENTORY</p>
+      <h1 class="page-title">Capabilities</h1>
+      <p class="page-sub">Active exploitation domains. Subversion engineering. Systems compromise.</p>
+    </header>
+
+    <div class="skills-grid">
+      <div class="skill-block">
+        <h3 class="skill-title">ADVERSARIAL OPERATIONS & MALWARE</h3>
+        <ul class="skill-list">
+          <li>Advanced Threat Emulation & Red Teaming</li>
+          <li>Evasion Engineering & Payload Development (C/C++)</li>
+          <li>Memory Manipulation & Direct Syscall Subversion</li>
+          <li>Infrastructure Breach & Lateral Movement</li>
+        </ul>
+      </div>
+
+      <div class="skill-block">
+        <h3 class="skill-title">CLOUD IDENTITY & INFRASTRUCTURE COMPROMISE</h3>
+        <ul class="skill-list">
+          <li>AWS/Azure IAM Privilege Escalation</li>
+          <li>Metadata Extraction & SSRF Weaponization</li>
+          <li>Container Escape & Kubernetes Subversion</li>
+          <li>Infrastructure-as-Code (IaC) Poisoning</li>
+        </ul>
+      </div>
+
+      <div class="skill-block">
+        <h3 class="skill-title">BESPOKE WEAPONIZATION & AUTOMATION</h3>
+        <ul class="skill-list">
+          <li>Low-Level Systems Engineering (C/C++)</li>
+          <li>Offensive AI & SAST Automation (Python)</li>
+          <li>Living-off-the-Land (LotL) Scripting (Bash/PS)</li>
+          <li>Custom Threat Emulation Tooling</li>
+        </ul>
+      </div>
+
+      <div class="skill-block">
+        <h3 class="skill-title">APPLICATION LOGIC SUBVERSION</h3>
+        <ul class="skill-list">
+          <li>REST/GraphQL API Weaponization</li>
+          <li>Cryptographic & Authentication Bypass</li>
+          <li>Complex IDOR & State Manipulation</li>
+          <li>Mobile Reverse Engineering & Unbundling</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 7rem 2rem 4rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .page-header {
+    margin-bottom: 3rem;
+  }
+
+  .page-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    color: var(--cyan);
+    margin-bottom: 1rem;
+  }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+    color: var(--stardust);
+  }
+
+  .page-sub {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ash);
+    font-weight: 300;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .skill-block {
+    padding: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: border-color 0.3s ease;
+  }
+
+  .skill-block:hover {
+    border-color: rgba(0, 240, 255, 0.12);
+  }
+
+  .skill-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--cyan);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .skill-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .skill-list li {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.9rem;
+    color: var(--ash);
+    font-weight: 300;
+    padding-left: 0.75rem;
+    border-left: 1px solid rgba(0, 240, 255, 0.15);
+    transition: border-color 0.3s, color 0.3s;
+  }
+
+  .skill-list li:hover {
+    border-left-color: var(--cyan);
+    color: var(--stardust);
+  }
+
+  @media (max-width: 768px) {
+    .page {
+      padding: 5rem 1.25rem 3rem;
+    }
+    .skills-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+  }
+</style>

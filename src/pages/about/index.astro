@@ -1,0 +1,314 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout>
+  <div class="page">
+    <header class="page-header">
+      <p class="page-tag">OPERATOR DOSSIER</p>
+      <h1 class="page-title">About</h1>
+    </header>
+
+    <div class="about-content">
+      
+      <!-- Lead -->
+      <div class="about-section">
+        <p class="about-lead">
+          I'm Emmanuel Awe, and I didn't get into offensive security to run vulnerability scanners 
+          and hand over automated PDFs. I got into this because I am obsessed with how complex systems 
+          are engineered—and more importantly, how they fall apart. As an Offensive Security Engineer, 
+          I approach hacking as a form of reverse systems engineering. Whether I'm deep in C/C++ writing 
+          custom shellcode or picking apart cloud infrastructure, my goal is always the same: to understand 
+          the target better than the architects who built it.
+        </p>
+      </div>
+
+      <!-- Philosophy -->
+      <div class="about-section">
+        <h3 class="about-heading">Philosophy</h3>
+        <p class="about-text">
+          I believe every system, no matter how sophisticated, still communicates in 0s and 1s to its host. 
+          This is my first principle of engineering and hacking software. When I'm not breaking systems, 
+          I spend time building them to put these ideologies into a real-world context, deeply understanding 
+          their development. Every software system or network is just a collection of moving parts wired 
+          together by code to perform specific operations.
+        </p>
+        <p class="about-text">
+          Thus, security is never a checklist. It is a fundamental discipline of understanding failure modes. 
+          I believe in depth over breadth, and you can't break a cloud environment if you don't grasp the 
+          underlying identity architecture. My approach is simple: the goal isn't just to find a bug. The 
+          goal is to comprehend the system so completely that its vulnerabilities become obvious. That shift 
+          in perspective—from hunting individual flaws to mastering the entire architecture—is what separates 
+          me from random operators.
+        </p>
+      </div>
+
+      <!-- The Craft -->
+      <div class="about-section">
+        <h3 class="about-heading">The Craft</h3>
+        <div class="craft-grid">
+          
+          <div class="craft-item">
+            <span class="craft-marker">01</span>
+            <div>
+              <h4>Adversarial Emulation</h4>
+              <p>
+                While safe, simulated scans are helpful tools for understanding how attackers work, 
+                I don't deal in hypotheses. I execute full-scope operations. You are shown what 
+                actually happens.
+              </p>
+            </div>
+          </div>
+
+          <div class="craft-item">
+            <span class="craft-marker">02</span>
+            <div>
+              <h4>Evasion Engineering</h4>
+              <p>
+                I build custom payloads and loaders in C/C++, leveraging direct syscalls and memory 
+                manipulation to bypass modern endpoint protection. Utilizing rigorous methodologies 
+                that stand toe-to-toe with modern adversaries, your defenses experience exactly what 
+                it means to be actively hunted.
+              </p>
+            </div>
+          </div>
+
+          <div class="craft-item">
+            <span class="craft-marker">03</span>
+            <div>
+              <h4>Cloud Subversion</h4>
+              <p>
+                I focus on the structural flaws of AWS and Azure—abusing IAM privileges, extracting 
+                metadata, and weaponizing SSRF.
+              </p>
+            </div>
+          </div>
+
+          <div class="craft-item">
+            <span class="craft-marker">04</span>
+            <div>
+              <h4>Bespoke Tooling</h4>
+              <p>
+                When the right tool doesn't exist, I build it. From AI-powered SAST engines to custom 
+                Python reconnaissance frameworks. If it is required to make something work, it will 
+                be built.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- The Code -->
+      <div class="about-section">
+        <h3 class="about-heading">The Code</h3>
+        <p class="about-text ethics">
+          The research I publish and the networks I compromise serve a single purpose: to harden 
+          infrastructure against actual threat actors. I push technical boundaries relentlessly, but 
+          always with absolute respect for the rules of engagement and the trust placed in me by 
+          clients and the community.
+        </p>
+      </div>
+
+      <!-- Connect -->
+      <div class="about-section">
+        <h3 class="about-heading">Connect</h3>
+        <div class="connect-links">
+          <a href="mailto:hello@cocofelon.lol" class="connect-link">
+            <span class="connect-label">Email</span>
+            <span class="connect-value">hello@cocofelon.lol</span>
+          </a>
+          <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener" class="connect-link">
+            <span class="connect-label">GitHub</span>
+            <span class="connect-value">ITEKONGIT</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 7rem 2rem 4rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .page-header {
+    margin-bottom: 3.5rem;
+  }
+
+  .page-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    color: var(--cyan);
+    margin-bottom: 1rem;
+  }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+    color: var(--stardust);
+  }
+
+  /* === Content Sections === */
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .about-section {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    padding-bottom: 2.5rem;
+  }
+
+  .about-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .about-lead {
+    font-family: 'Lexend', sans-serif;
+    font-size: 1.1rem;
+    color: var(--stardust);
+    font-weight: 300;
+    line-height: 1.85;
+  }
+
+  .about-heading {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--cyan);
+    margin-bottom: 1.5rem;
+  }
+
+  .about-text {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ash);
+    font-weight: 300;
+    line-height: 1.85;
+    margin-bottom: 1.25rem;
+  }
+
+  .about-text:last-child {
+    margin-bottom: 0;
+  }
+
+  /* === Ethics block === */
+  .about-text.ethics {
+    border-left: 1px solid var(--cyan);
+    padding-left: 1.25rem;
+    font-style: italic;
+  }
+
+  /* === The Craft Grid === */
+  .craft-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .craft-item {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+
+  .craft-marker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--cyan);
+    opacity: 0.5;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  .craft-item h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--stardust);
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.01em;
+  }
+
+  .craft-item p {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.88rem;
+    color: var(--ash);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* === Connect Links === */
+  .connect-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .connect-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    text-decoration: none;
+    transition: border-color 0.3s;
+  }
+
+  .connect-link:hover {
+    border-bottom-color: rgba(0, 240, 255, 0.2);
+  }
+
+  .connect-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ash);
+  }
+
+  .connect-value {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.9rem;
+    color: var(--stardust);
+    font-weight: 300;
+    transition: color 0.3s;
+  }
+
+  .connect-link:hover .connect-value {
+    color: var(--cyan);
+  }
+
+  @media (max-width: 768px) {
+    .page {
+      padding: 5rem 1.25rem 3rem;
+    }
+
+    .about-lead {
+      font-size: 1rem;
+    }
+
+    .craft-item h4 {
+      font-size: 0.95rem;
+    }
+
+    .craft-item p {
+      font-size: 0.82rem;
+    }
+  }
+</style>

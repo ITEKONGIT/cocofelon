@@ -1,0 +1,290 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const allPosts = await getCollection('blog');
+
+// Sort by date descending
+const posts = allPosts.sort((a, b) => {
+  return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+});
+
+// Extract unique tags from all posts that have them
+const tagSet = new Set<string>();
+posts.forEach(p => {
+  if (p.data.tags) {
+    p.data.tags.forEach(t => tagSet.add(t));
+  }
+});
+const tags = [...tagSet].sort();
+---
+
+<Layout>
+  <div class="archive">
+    <header class="archive-header">
+      <p class="archive-tag">TRANSMISSION ARCHIVE</p>
+      <h1 class="archive-title">THE DOSSIER</h1>
+      <p class="archive-sub">Field reports, technical breakdowns, and research notes from the wire.</p>
+    </header>
+
+    <!-- Filters -->
+    <div class="archive-filters" id="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      {tags.map(tag => (
+        <button class="filter-btn" data-filter={tag}>{tag}</button>
+      ))}
+    </div>
+
+    <!-- Posts table -->
+    <div class="archive-table" id="archive-table">
+      {posts.map((post) => (
+        <a 
+          href={`/blog/${post.data.slug}`} 
+          class="archive-row" 
+          data-category={post.data.tags ? post.data.tags.join(' ') : 'uncategorized'}
+        >
+          <span class="row-date">{post.data.date}</span>
+          <span class="row-title">{post.data.title}</span>
+          <span class="row-tags">
+            {post.data.tags ? post.data.tags.join(' · ') : '—'}
+          </span>
+          <span class="row-arrow">→</span>
+        </a>
+      ))}
+    </div>
+
+    <!-- Empty state -->
+    <div class="archive-empty" id="archive-empty" style="display:none;">
+      <p>No transmissions match this filter.</p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .archive {
+    min-height: 100vh;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .archive-header {
+    margin-bottom: 3rem;
+  }
+
+  .archive-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    color: var(--cyan);
+    margin-bottom: 1rem;
+  }
+
+  .archive-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+    color: var(--stardust);
+  }
+
+  .archive-sub {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ash);
+    font-weight: 300;
+    max-width: 500px;
+  }
+
+  /* Filters */
+  .archive-filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .filter-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.35rem 0.85rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--ash);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .filter-btn.active,
+  .filter-btn:hover {
+    border-color: rgba(0, 240, 255, 0.3);
+    color: var(--cyan);
+    background: rgba(0, 240, 255, 0.04);
+  }
+
+  /* Table */
+  .archive-table {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .archive-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 200px 30px;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    text-decoration: none;
+    transition: background 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+  }
+
+  .archive-row:hover {
+    background: rgba(0, 240, 255, 0.015);
+    border-bottom-color: rgba(0, 240, 255, 0.1);
+  }
+
+  .row-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--cyan);
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+  }
+
+  .row-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--stardust);
+    transition: color 0.3s ease;
+    letter-spacing: -0.01em;
+  }
+
+  .archive-row:hover .row-title {
+    color: var(--cyan);
+  }
+
+  .row-tags {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--ash);
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+  }
+
+  .row-arrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.15);
+    text-align: right;
+    transition: all 0.3s ease;
+  }
+
+  .archive-row:hover .row-arrow {
+    color: var(--cyan);
+    transform: translateX(4px);
+  }
+
+  .archive-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    font-family: 'Lexend', sans-serif;
+    color: var(--ash);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  @media (max-width: 768px) {
+    .archive {
+      padding: 4rem 1.25rem 3rem;
+    }
+
+    .archive-row {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+      padding: 1rem 0;
+    }
+
+    .row-tags {
+      display: none;
+    }
+
+    .row-arrow {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  // Filter animation
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const rows = document.querySelectorAll('.archive-row');
+  const empty = document.getElementById('archive-empty');
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+
+      filterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const categories = row.dataset.category || '';
+        const isMatch = filter === 'all' || categories.split(' ').includes(filter);
+
+        if (isMatch) {
+          visibleCount++;
+          gsap.to(row, {
+            opacity: 1,
+            height: 'auto',
+            duration: 0.35,
+            ease: 'power2.out',
+            onStart: () => { row.style.display = 'grid'; }
+          });
+        } else {
+          gsap.to(row, {
+            opacity: 0,
+            height: 0,
+            paddingTop: 0,
+            paddingBottom: 0,
+            borderBottomWidth: 0,
+            duration: 0.25,
+            ease: 'power2.in',
+            onComplete: () => { row.style.display = 'none'; }
+          });
+        }
+      });
+
+      // Show/hide empty state
+      if (visibleCount === 0) {
+        gsap.to(empty, { opacity: 1, display: 'block', duration: 0.3 });
+      } else {
+        gsap.to(empty, { opacity: 0, display: 'none', duration: 0.2 });
+      }
+    });
+  });
+
+  // Initial reveal animation
+  gsap.fromTo('.archive-header',
+    { opacity: 0, y: 20 },
+    { opacity: 1, y: 0, duration: 1, ease: 'expo.out', delay: 0.2 }
+  );
+
+  gsap.fromTo('.archive-row',
+    { opacity: 0, y: 10 },
+    { opacity: 1, y: 0, duration: 0.5, stagger: 0.04, ease: 'expo.out', delay: 0.5 }
+  );
+</script>

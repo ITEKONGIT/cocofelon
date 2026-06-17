@@ -1,0 +1,59 @@
+---
+import '../styles/global.css';
+import Canvas from '../components/Canvas.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import BaseHead from '../components/BaseHead.astro';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <BaseHead />
+  <link rel="icon" type="image/png" href="/codemechanic.png" />
+</head>
+<body>
+  <!-- Astral Tunnel — fixed behind everything -->
+  <div style="position: fixed; inset: 0; z-index: -10;">
+    <Canvas />
+  </div>
+
+  <!-- Vignette overlay -->
+  <div style="position: fixed; inset: 0; z-index: -9; pointer-events: none; background: radial-gradient(ellipse at center, transparent 30%, #030305 100%);"></div>
+
+  <!-- Custom cursor -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+
+  <!-- Navigation -->
+  <Nav />
+
+  <!-- Page content -->
+  <slot />
+
+  <!-- Footer -->
+  <Footer />
+
+  <script>
+    import gsap from 'gsap';
+
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+
+    if (dot && ring) {
+      document.addEventListener('mousemove', (e) => {
+        gsap.to(dot, { x: e.clientX - 2, y: e.clientY - 2, duration: 0.05, overwrite: 'auto' });
+        gsap.to(ring, { x: e.clientX - 12, y: e.clientY - 12, duration: 0.25, overwrite: 'auto' });
+      });
+
+      document.addEventListener('mouseleave', () => {
+        gsap.to([dot, ring], { opacity: 0, duration: 0.15, overwrite: 'auto' });
+      });
+
+      document.addEventListener('mouseenter', () => {
+        gsap.to([dot, ring], { opacity: 1, duration: 0.15, overwrite: 'auto' });
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => {
+    const slug = post.data.slug || post.id.split('/').pop()?.replace(/\.md$/, '') || 'unknown';
+    return {
+      params: { slug },
+      props: { post },
+    };
+  });
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout>
+  <article class="transmission">
+    <header class="post-header">
+      <a href="/blog" class="post-back">← ARCHIVE</a>
+      <h1 class="post-title">{post.data.title}</h1>
+      <div class="post-meta">
+        <span class="post-date">{post.data.date}</span>
+        {post.data.series && (
+          <span class="post-series">{post.data.series}{post.data.part ? ` · Part ${post.data.part}` : ''}</span>
+        )}
+        {post.data.difficulty && (
+          <span class="post-difficulty">{post.data.difficulty}</span>
+        )}
+        {post.data.tags && post.data.tags.map((tag: string) => (
+          <span class="post-tag">{tag}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="post-footer">
+      <div class="author-pulse">
+        <span class="pulse-dot"></span>
+        <div>
+          <p class="author-name">Emmanuel Awe</p>
+          <p class="author-note">Offensive Security Engineer · All testing authorized · Findings disclosed responsibly</p>
+        </div>
+      </div>
+    </footer>
+  </article>
+</Layout>
+
+<style>
+  .transmission {
+    min-height: 100vh;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .post-header {
+    margin-bottom: 3rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 2rem;
+  }
+
+  .post-back {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(0, 240, 255, 0.5);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 2rem;
+    transition: color 0.3s;
+  }
+
+  .post-back:hover {
+    color: var(--cyan);
+  }
+
+  .post-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: var(--ash);
+  }
+
+  .post-date {
+    color: var(--cyan);
+  }
+
+  .post-series {
+    color: rgba(168, 85, 247, 0.7);
+  }
+
+  .post-difficulty {
+    padding: 0.1rem 0.5rem;
+    border: 1px solid rgba(0, 240, 255, 0.15);
+    font-size: 0.55rem;
+  }
+
+  .post-tag {
+    padding: 0.1rem 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.55rem;
+    color: var(--ash);
+    opacity: 0.6;
+  }
+
+  .post-footer {
+    margin-top: 5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .author-pulse {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--cyan);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(1.6); }
+  }
+
+  .author-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .author-note {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.65rem;
+    color: var(--ash);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  @media (max-width: 768px) {
+    .transmission {
+      padding: 4rem 1.25rem 3rem;
+    }
+  }
+</style>
