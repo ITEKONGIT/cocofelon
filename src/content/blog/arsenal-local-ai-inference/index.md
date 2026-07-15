@@ -26,7 +26,9 @@ The solution is a Controller/Agent split:
 ### Step 1: Exposing the Inference Server
 By default, Ollama binds strictly to `127.0.0.1` for security reasons. To allow the Controller to reach it, we must bind the service to all local interfaces and punch a hole in the Windows Defender Firewall. 
 
-I wrote this PowerShell script (`windows_ollama_bind.ps1`) to automate the binding and firewall configuration on the Dell inference node:
+I wrote this PowerShell script to automate the binding and firewall configuration on the Dell inference node.
+
+**Source:** [`jericho/ai-inference/scripts/windows_ollama_bind.ps1`](https://github.com/ITEKONGIT/jericho/blob/main/ai-inference/scripts/windows_ollama_bind.ps1)
 
 ```powershell
 <#
@@ -45,9 +47,11 @@ New-NetFirewallRule -DisplayName "Jericho Ollama API" -Direction Inbound -LocalP
 
 Write-Host "[+] Success. Please restart the Ollama application for changes to take effect." -ForegroundColor Green
 Step 2: The Command Line Bridge
-To make this usable in the middle of an assessment, I built a CLI bridge in Python (parrot_agent.py) that lives on my Parrot OS terminal.
+To make this usable in the middle of an assessment, I built a CLI bridge in Python that lives on my Parrot OS terminal.
 
 The critical feature here is the sys.stdin evaluation. It allows the script to intercept piped data from the terminal. This means I can pipe standard output directly to the local Ollama API without intermediate files.
+
+Source: jericho/ai-inference/scripts/parrot_agent.py
 
 Python
 #!/usr/bin/env python3
