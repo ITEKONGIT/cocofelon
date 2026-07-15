@@ -1,0 +1,42 @@
+---
+title: "The Arsenal: Building a Local AI Inference Architecture for Security Research"
+date: 2026-07-15
+slug: arsenal-local-ai-inference
+series: "The Arsenal"
+part: 1
+difficulty: "Advanced"
+---
+
+## The Privacy Problem in Offensive Security
+When analyzing sensitive endpoint logs, reverse-engineering proprietary binaries, or generating highly specific evasion payloads, sending that context to OpenAI or Google is an operational security failure. You are essentially logging your zero-days and client data on someone else's server.
+
+To solve this, I engineered a localized AI inference architecture.
+
+## The Hardware Split
+Running deep-seek or OpenCode models locally requires significant VRAM. Attempting to run this on the same machine you are actively using for heavy virtualization or exploitation creates resource starvation. 
+
+The solution is a Controller/Agent split:
+1. **The Inference Server:** A dedicated Windows host (Dell Inspiron 16+) running Ollama. This handles the raw compute and exposes a local API bound to the internal network.
+2. **The Controller:** My primary Parrot OS bare-metal machine. This acts as the command center, keeping the heavy lifting entirely off the penetration testing environment.
+
+## The API Bridge
+To make this usable in the middle of an assessment, I built a CLI bridge in Python that allows my Parrot OS terminal to pipe standard output directly to the local Ollama API.
+
+[code:python]
+# Excerpt from jericho/ai-inference/scripts/parrot_agent.py
+
+def stream_response(prompt, model, system_prompt=None):
+    url = f"http://192.168.1.50:11434/api/generate"
+    
+    payload = {
+        "model": model,
+        "prompt": prompt,
+        "stream": True
+    }
+    
+    try:
+        response = requests.post(url, json=payload, stream=True, timeout=30)
+        # ... standard output piping logic ...
+[/code]
+
+This setup allows me to pipe web application logs or raw network captures directly into the local AI for analysis without ever leaving the terminal. By isolating the compute from the attack surface, we maintain absolute data privacy while gaining the benefits of an AI co-pilot directly in the offensive terminal.
