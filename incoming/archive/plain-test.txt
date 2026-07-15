@@ -1,9 +1,3 @@
----
-title: "Untitled"
-date: undefined
-slug: untitled
----
-
 Sneaky Shellcode Shenanigans Windows Defender Dodging Loader
 
 Overview
