@@ -12,19 +12,29 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+
+// Helper to reliably format the date
+const formatDate = (dateInput) => {
+  if (!dateInput) return '';
+  const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return String(dateInput); // Fallback if invalid date
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
 ---
 
 <Layout>
   <article class="transmission">
     
-    <!-- Back link -->
     <a href="/blog" class="post-back">← ARCHIVE</a>
 
-    <!-- Post header -->
     <header class="post-header">
       <h1 class="post-title">{post.data.title}</h1>
       <div class="post-meta">
-        <span class="post-date">{post.data.date}</span>
+        <span class="post-date">{formatDate(post.data.date)}</span>
         {post.data.series && (
           <span class="post-series">{post.data.series}{post.data.part ? ` · Part ${post.data.part}` : ''}</span>
         )}
@@ -37,20 +47,16 @@ const { Content } = await render(post);
       </div>
     </header>
 
-    <!-- Post body with rich prose -->
     <div class="prose">
       <Content />
     </div>
 
-    <!-- Series navigation (if part of a series) -->
     {post.data.series && (
       <nav class="series-nav">
         <p class="series-nav-title">This article is part of <span>{post.data.series}</span></p>
-        <!-- Next/Prev would go here with dynamic logic -->
-      </nav>
+        </nav>
     )}
 
-    <!-- Article footer -->
     <footer class="post-footer">
       <div class="author-box">
         <div class="author-avatar">EA</div>
