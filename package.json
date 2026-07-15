@@ -6,11 +6,10 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
+  "dev": "astro dev",
+  "build": "node scripts/transpose.js && astro build",
+  "lint": "eslint src/**/*.ts"
+            }   ,
   "dependencies": {
     "@astrojs/netlify": "^7.0.13",
     "@astrojs/sitemap": "^3.7.3",
