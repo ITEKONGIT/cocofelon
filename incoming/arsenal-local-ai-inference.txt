@@ -3,51 +3,67 @@
 # DATE: 2026-07-15
 # TAGS: AI, Architecture, Python, PowerShell, OpSec
 
-Modern offensive research relies on AI co-pilots, but transmitting zero-day context to third-party endpoints is a fatal OpSec failure. This architecture creates an isolated Controller/Agent ecosystem for private, local inference.
+## Executive Summary
+In offensive security, data privacy is paramount. Transmitting proprietary binaries, zero-day research, or sensitive client logs to public AI endpoints is an unacceptable operational risk. This architecture creates an isolated Controller/Agent ecosystem for private, local inference.
 
-### I. Architectural Debt & Security Hardening
-* Network Isolation: The Inference Server acts as a black box. Communication is restricted to the internal network.
-* Ephemeral Context: The Python bridge utilizes stdin pipes to ensure no sensitive target data is persisted to the Inference Server's disk.
-* Service Persistence: The Windows node leverages background execution to prevent session timeouts.
+---
 
-### II. Implementation: Inference Server (Dell Inspiron)
-We must force the Ollama binary to listen on the local network. 
+## 1. Threat Model & Design
+* **Data Locality:** All inference requests remain within the local network boundary.
+* **Ephemeral Processing:** Data is piped via `stdin`, ensuring zero persistence on the inference server's storage.
+* **Resource Management:** By offloading heavy compute to a dedicated host, we avoid resource starvation on the primary penetration testing rig.
 
-**Repo:** jericho/ai-inference/scripts/windows_ollama_bind.ps1
+---
+
+## 2. Infrastructure: The Inference Server
+The inference node (Dell Inspiron 16+) utilizes **Ollama** to provide the backend API. We must override default loopback binding to enable network-level access.
+
+**Repo Reference:** [jericho/ai-inference/scripts/windows_ollama_bind.ps1](https://github.com/ITEKONGIT/jericho/blob/main/ai-inference/scripts/windows_ollama_bind.ps1)
 
 ```powershell
-# Binds service to 0.0.0.0 (all interfaces)
+# Set API to listen on all interfaces
 [Environment]::SetEnvironmentVariable("OLLAMA_HOST", "0.0.0.0", "Machine")
-# Hardening: Allow traffic only from the Controller's IP
-New-NetFirewallRule -DisplayName "Jericho Ollama" -RemoteAddress 192.168.1.10 -LocalPort 11434 -Action Allow
-III. Implementation: Controller Bridge (Parrot OS)
-The bridge implementation requires robust error handling to prevent "broken pipes" during long-running analysis.
 
-Repo: jericho/ai-inference/scripts/parrot_agent.py
+# Hardening: Limit ingress traffic to the Controller's static IP
+New-NetFirewallRule -DisplayName "Jericho Ollama API" `
+    -Direction Inbound `
+    -RemoteAddress 192.168.1.10 `
+    -LocalPort 11434 `
+    -Protocol TCP `
+    -Action Allow
+3. Infrastructure: The Controller Bridge
+The bridge allows the Parrot OS terminal to act as a client. It intercepts stdin, allowing for seamless integration with standard tools like nmap or grep.
+
+Repo Reference: jericho/ai-inference/scripts/parrot_agent.py
 
 Python
 #!/usr/bin/env python3
 import requests, sys, json
+
 OLLAMA_HOST = "[http://192.168.1.50:11434/api/generate](http://192.168.1.50:11434/api/generate)"
 
-def stream_response(prompt, model):
+def stream_response(data, model="deepseek-coder"):
     try:
-        response = requests.post(OLLAMA_HOST, json={"model": model, "prompt": prompt, "stream": True}, stream=True, timeout=60)
+        response = requests.post(
+            OLLAMA_HOST, 
+            json={"model": model, "prompt": f"Analyze: {data}", "stream": True}, 
+            stream=True, timeout=60
+        )
         response.raise_for_status()
         for line in response.iter_lines():
             if line:
                 chunk = json.loads(line).get("response", "")
                 sys.stdout.write(chunk); sys.stdout.flush()
-    except requests.exceptions.Timeout:
-        print("\n[-] Error: Inference Server timed out")
+    except Exception as e:
+        print(f"\n[-] Bridge Error: {e}", file=sys.stderr)
         sys.exit(1)
 
 if __name__ == "__main__":
-    stream_response(sys.stdin.read(), "deepseek-coder")
-IV. Operational Workflow
-Host Discovery: Verify network path (ping 192.168.1.50).
+    stream_response(sys.stdin.read())
+4. Operational Deployment
+This setup allows you to integrate AI analysis into your existing toolchain without intermediate file creation:
 
-Execution:
-cat target_binary.hex | ./parrot_agent.py -m deepseek-coder
-
-Operational Note: If the Inference Server returns 500 errors, check the Dell Inspiron's VRAM usage; local inference is compute-intensive and prone to thermal throttling.
+Bash
+# Example: Pipe binary analysis directly to the agent
+cat target_payload.bin | ./parrot_agent.py -m deepseek-coder
+Note: Monitor system thermal states during heavy inference loads. Ensure the Dell Inspiron has adequate airflow during long-running analysis of large datasets.
