@@ -17,6 +17,14 @@ posts.forEach(p => {
   }
 });
 const tags = [...tagSet].sort();
+
+// Standardize the archive date format to YYYY-MM-DD
+const formatArchiveDate = (dateInput) => {
+  if (!dateInput) return '—';
+  const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return String(dateInput);
+  return d.toISOString().split('T')[0];
+};
 ---
 
 <Layout>
@@ -27,7 +35,6 @@ const tags = [...tagSet].sort();
       <p class="archive-sub">Field reports, technical breakdowns, and research notes from the wire.</p>
     </header>
 
-    <!-- Filters -->
     <div class="archive-filters" id="filters">
       <button class="filter-btn active" data-filter="all">All</button>
       {tags.map(tag => (
@@ -35,15 +42,14 @@ const tags = [...tagSet].sort();
       ))}
     </div>
 
-    <!-- Posts table -->
     <div class="archive-table" id="archive-table">
       {posts.map((post) => (
-        <a 
-          href={`/blog/${post.data.slug}`} 
-          class="archive-row" 
+        <a
+          href={`/blog/${post.data.slug}`}
+          class="archive-row"
           data-category={post.data.tags ? post.data.tags.join(' ') : 'uncategorized'}
         >
-          <span class="row-date">{post.data.date}</span>
+          <span class="row-date">{formatArchiveDate(post.data.date)}</span>
           <span class="row-title">{post.data.title}</span>
           <span class="row-tags">
             {post.data.tags ? post.data.tags.join(' · ') : '—'}
@@ -53,7 +59,6 @@ const tags = [...tagSet].sort();
       ))}
     </div>
 
-    <!-- Empty state -->
     <div class="archive-empty" id="archive-empty" style="display:none;">
       <p>No transmissions match this filter.</p>
     </div>
