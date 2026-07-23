@@ -3,6 +3,7 @@ slug: i-hacked-a-bank
 title: "I HACKED A BANK: 17 Critical Vulnerabilities — Part 1: The Big Hitters"
 date: "2024-11-20"
 description: "During an authorized security assessment of a banking application, I discovered 17 vulnerabilities including SQL injection, SSRF, privilege escalation, race conditions, and multiple IDOR flaws."
+category: fintech
 tags: ["Pentesting"]
 series: "Bank Hack"
 part: 1

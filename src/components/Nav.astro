@@ -1,15 +1,23 @@
 ---
-// Nav.astro – crystalline fixed navigation
+// Nav.astro - fixed site navigation
+import { Menu, X } from '@lucide/astro';
 ---
 
 <nav class="nav" id="nav">
   <div class="nav-inner">
-    <a href="/" class="nav-logo">COCOFELON</a>
-    <div class="nav-links">
-      <a href="/blog" class="nav-link">Dossier</a>
-      <a href="/projects" class="nav-link">Arsenal</a>
-      <a href="/experience" class="nav-link">History</a>
-      <a href="/capabilities" class="nav-link">Signal</a>
+    <a href="/" class="nav-logo">
+      <span>COCOFELON</span>
+      <small>systems / security</small>
+    </a>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation">
+      <Menu class="menu-icon" size={19} stroke-width={1.8} aria-hidden="true" />
+      <X class="close-icon" size={19} stroke-width={1.8} aria-hidden="true" />
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="/blog" class="nav-link">Writing</a>
+      <a href="/projects" class="nav-link">Projects</a>
+      <a href="/experience" class="nav-link">Experience</a>
+      <a href="/capabilities" class="nav-link">Capabilities</a>
       <a href="/about" class="nav-link">About</a>
     </div>
   </div>
@@ -22,11 +30,11 @@
     left: 0;
     right: 0;
     z-index: 50;
-    padding: 0.75rem 2rem;
-    background: rgba(3, 3, 5, 0.7);
+    padding: 0.85rem 2rem;
+    background: rgba(5, 6, 8, 0.76);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid var(--border-muted);
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -41,41 +49,97 @@
   .nav-logo {
     font-family: 'Syne', sans-serif;
     font-weight: 800;
-    font-size: 1.1rem;
-    letter-spacing: -0.02em;
-    color: var(--stardust);
+    font-size: 1rem;
+    letter-spacing: 0;
+    color: var(--text);
     text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    gap: 0.25rem;
+  }
+
+  .nav-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 1px solid var(--border-muted);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .close-icon { display: none; }
+
+  .nav-logo small {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.52rem;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-faint);
   }
 
   .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .nav-link {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--ash);
+    letter-spacing: 0.14em;
+    color: var(--text-muted);
     text-decoration: none;
     transition: color 0.3s;
   }
 
   .nav-link:hover {
-    color: var(--cyan);
+    color: var(--accent);
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 760px) {
     .nav {
       padding: 0.75rem 1rem;
     }
-    .nav-links {
-      gap: 1.25rem;
+
+    .nav-inner {
+      align-items: center;
     }
+
+    .nav-toggle { display: inline-flex; }
+
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: calc(100% + 1px);
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      gap: 0;
+      padding: 0.5rem 1rem 0.8rem;
+      background: rgba(5, 6, 8, 0.96);
+      border-bottom: 1px solid var(--border-muted);
+    }
+
+    .nav.is-open .nav-links { display: flex; }
+    .nav.is-open .menu-icon { display: none; }
+    .nav.is-open .close-icon { display: block; }
+
     .nav-link {
-      font-size: 0.55rem;
-      letter-spacing: 0.15em;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border-muted);
+      font-size: 0.58rem;
+    }
+
+    .nav-link:last-child { border-bottom: 0;
+    }
+
+    .nav-logo small {
+      display: none;
     }
   }
 </style>
@@ -86,7 +150,21 @@
   gsap.registerPlugin(ScrollTrigger);
 
   const nav = document.getElementById('nav');
+  const toggle = document.getElementById('nav-toggle');
+  const links = document.querySelectorAll('.nav-link');
   let lastScroll = 0;
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = nav?.classList.toggle('is-open') ?? false;
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    toggle.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+  });
+
+  links.forEach((link) => link.addEventListener('click', () => {
+    nav?.classList.remove('is-open');
+    toggle?.setAttribute('aria-expanded', 'false');
+    toggle?.setAttribute('aria-label', 'Open navigation');
+  }));
 
   ScrollTrigger.create({
     start: 'top -80',

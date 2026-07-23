@@ -3,7 +3,8 @@ slug: cwl-cloud-breaker
 title: "CWL Cloud Breaker — SSRF → EC2 Role Impact"
 date: "2024-12-15"
 description: "How a tiny input-validation slip in a server-side fetch feature led to catastrophic cloud identity compromise through SSRF and IAM credential extraction."
-tags: ["Pentesting"]
+category: security
+tags: ["Cloud Identity", "SSRF", "Pentesting"]
 ---
 
 **Executive summary:** I hacked a cloud service where a vulnerable EC2-hosted web app with a server-side fetch feature exposed the instance metadata surface via SSRF, allowing temporary IAM role credentials to be disclosed. The chain illustrates how a tiny input-validation slip can become a catastrophic cloud identity compromise.

@@ -3,7 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection('blog', ({ data }) => data.status !== 'draft');
   return posts.map((post) => {
     const slug = post.data.slug || post.id.split('/').pop()?.replace(/\.md$/, '') || 'unknown';
     return { params: { slug }, props: { post } };
@@ -12,6 +12,13 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+const categoryLabels = {
+  security: 'Security',
+  engineering: 'Engineering',
+  fintech: 'Fintech',
+  ai: 'AI + tooling',
+  notes: 'Notes',
+};
 
 // Helper to reliably format the date
 const formatDate = (dateInput) => {
@@ -29,12 +36,13 @@ const formatDate = (dateInput) => {
 <Layout>
   <article class="transmission">
     
-    <a href="/blog" class="post-back">← ARCHIVE</a>
+    <a href="/blog" class="post-back">← Writing</a>
 
     <header class="post-header">
       <h1 class="post-title">{post.data.title}</h1>
       <div class="post-meta">
         <span class="post-date">{formatDate(post.data.date)}</span>
+        <span class="post-category">{categoryLabels[post.data.category]}</span>
         {post.data.series && (
           <span class="post-series">{post.data.series}{post.data.part ? ` · Part ${post.data.part}` : ''}</span>
         )}
@@ -62,7 +70,7 @@ const formatDate = (dateInput) => {
         <div class="author-avatar">EA</div>
         <div class="author-info">
           <h4>Emmanuel Awe</h4>
-          <p>Offensive Security Engineer — Building defensible systems through offensive research.</p>
+          <p>Software engineer and security researcher writing from the systems I build, test, and study.</p>
           <div class="author-links">
             <a href="mailto:hello@cocofelon.lol">Email</a>
             <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener">GitHub</a>
@@ -134,6 +142,11 @@ const formatDate = (dateInput) => {
   }
 
   .post-date { color: var(--cyan); }
+
+  .post-category {
+    color: var(--cyan);
+    text-transform: uppercase;
+  }
   
   .post-series { 
     color: rgba(168, 85, 247, 0.7); 

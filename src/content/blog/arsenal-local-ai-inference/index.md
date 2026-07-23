@@ -1,12 +1,13 @@
 ---
-title: "The Arsenal: Building a Local AI Inference Architecture for Security Research"
+title: "Building a Local AI Inference Architecture for Security Research"
 slug: "arsenal-local-ai-inference"
 date: "2026-07-15"
 description: "Engineering a localized, offline Controller/Agent AI architecture to protect zero-day context during active engagements."
-series: "The Arsenal"
+category: ai
+series: "Local AI Notes"
 part: 1
 difficulty: "Advanced"
-tags: ["AI", "Architecture", "Python", "PowerShell", "OpSec"]
+tags: ["AI", "Architecture", "Python", "PowerShell", "Security Research"]
 ---
 
 ### The Privacy Problem in Offensive Security

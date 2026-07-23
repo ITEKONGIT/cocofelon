@@ -3,7 +3,8 @@ slug: technology-today
 title: "Technology Today"
 date: "2025-05-15"
 description: "Exploring the digital landscape — from AI ethics to cybersecurity challenges in our connected world."
-tags: ["Opinion"]
+category: notes
+tags: ["Opinion", "AI", "Technology"]
 ---
 
 Technology has woven itself into the very fabric of our existence, transforming how we communicate, work, and dream. From the early days of clunky computers to the sleek devices that fit in our pockets, the journey has been nothing short of revolutionary.

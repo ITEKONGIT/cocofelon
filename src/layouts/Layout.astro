@@ -13,13 +13,12 @@ import BaseHead from '../components/BaseHead.astro';
   <link rel="icon" type="image/png" href="/codemechanic.png" />
 </head>
 <body>
-  <!-- Astral Tunnel — fixed behind everything -->
-  <div style="position: fixed; inset: 0; z-index: -10;">
+  <!-- Ambient canvas — fixed behind everything -->
+  <div class="ambient-canvas">
     <Canvas />
   </div>
 
-  <!-- Vignette overlay -->
-  <div style="position: fixed; inset: 0; z-index: -9; pointer-events: none; background: radial-gradient(ellipse at center, transparent 30%, #030305 100%);"></div>
+  <div class="ambient-vignette"></div>
 
   <!-- Custom cursor -->
   <div class="cursor-dot" id="cursor-dot"></div>
@@ -39,8 +38,12 @@ import BaseHead from '../components/BaseHead.astro';
 
     const dot = document.getElementById('cursor-dot');
     const ring = document.getElementById('cursor-ring');
+    const canUseCustomCursor = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (dot && ring) {
+    if (dot && ring && canUseCustomCursor && !prefersReducedMotion) {
+      document.body.classList.add('has-custom-cursor');
+
       document.addEventListener('mousemove', (e) => {
         gsap.to(dot, { x: e.clientX - 2, y: e.clientY - 2, duration: 0.05, overwrite: 'auto' });
         gsap.to(ring, { x: e.clientX - 12, y: e.clientY - 12, duration: 0.25, overwrite: 'auto' });
@@ -57,3 +60,28 @@ import BaseHead from '../components/BaseHead.astro';
   </script>
 </body>
 </html>
+
+<style>
+  .ambient-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    opacity: 0.62;
+  }
+
+  .ambient-vignette {
+    position: fixed;
+    inset: 0;
+    z-index: -9;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(5, 6, 8, 0.22), rgba(5, 6, 8, 0.72)),
+      radial-gradient(ellipse at center, transparent 18%, var(--bg) 100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ambient-canvas {
+      opacity: 0.22;
+    }
+  }
+</style>

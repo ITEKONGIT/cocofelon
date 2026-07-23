@@ -3,6 +3,7 @@ slug: i-hacked-a-bank-part-2
 title: "I HACKED A BANK: Part 2 — The Supporting Cast"
 date: "2025-10-15"
 description: "Part 2: IDOR, information disclosure, and file upload vulnerabilities that complete the banking app takeover."
+category: fintech
 tags: ["Pentesting"]
 series: "Bank Hack"
 part: 2

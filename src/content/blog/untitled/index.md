@@ -1,7 +1,11 @@
 ---
-title: "Untitled"
-date: undefined
-slug: untitled
+title: "Shellcode Loader Notes Draft"
+date: "2025-03-09"
+slug: shellcode-loader-notes-draft
+description: "Draft notes for a controlled lab writeup on fileless loader behavior, API hashing, and detection opportunities."
+category: security
+tags: ["Recon & Malware", "C++", "Detection"]
+status: draft
 ---
 
 Sneaky Shellcode Shenanigans Windows Defender Dodging Loader

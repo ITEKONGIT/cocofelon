@@ -7,16 +7,20 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/transpose.js && astro build",
+    "build": "npm run validate:content && astro build",
+    "import:posts": "node scripts/transpose.js",
+    "validate:content": "node scripts/content-validator.js",
     "lint": "eslint src/**/*.ts"
   },
   "dependencies": {
     "@astrojs/netlify": "^7.0.13",
     "@astrojs/sitemap": "^3.7.3",
+    "@lucide/astro": "^1.26.0",
     "astro": "^6.4.7",
     "autoprefixer": "^10.5.0",
     "decap-cms-app": "^3.14.1",
     "gsap": "^3.15.0",
+    "js-yaml": "^5.2.1",
     "postcss": "^8.5.15",
     "tailwindcss": "^3.4.19",
     "three": "^0.184.0"
