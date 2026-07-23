@@ -1,42 +1,69 @@
+# TITLE: The Arsenal: Building a Local AI Inference Architecture
+# SLUG: arsenal-local-ai-inference
+# DATE: 2026-07-15
+# TAGS: AI, Architecture, Python, PowerShell, OpSec
+
+## Executive Summary
+In offensive security, data privacy is paramount. Transmitting proprietary binaries, zero-day research, or sensitive client logs to public AI endpoints is an unacceptable operational risk. This architecture creates an isolated Controller/Agent ecosystem for private, local inference.
+
 ---
-title: "The Arsenal: Building a Local AI Inference Architecture for Security Research"
-slug: arsenal-local-ai-inference
-date: "2026-07-15"
-series: "The Arsenal"
-part: 1
-difficulty: "Advanced"
+
+## 1. Threat Model & Design
+* **Data Locality:** All inference requests remain within the local network boundary.
+* **Ephemeral Processing:** Data is piped via `stdin`, ensuring zero persistence on the inference server's storage.
+* **Resource Management:** By offloading heavy compute to a dedicated host, we avoid resource starvation on the primary penetration testing rig.
+
 ---
 
-## The Privacy Problem in Offensive Security
-When analyzing sensitive endpoint logs, reverse-engineering proprietary binaries, or generating highly specific evasion payloads, sending that context to OpenAI or Google is an operational security failure. You are essentially logging your zero-days and client data on someone else's server.
+## 2. Infrastructure: The Inference Server
+The inference node (Dell Inspiron 16+) utilizes **Ollama** to provide the backend API. We must override default loopback binding to enable network-level access.
 
-To solve this, I engineered a localized AI inference architecture.
+**Repo Reference:** [jericho/ai-inference/scripts/windows_ollama_bind.ps1](https://github.com/ITEKONGIT/jericho/blob/main/ai-inference/scripts/windows_ollama_bind.ps1)
 
-## The Hardware Split
-Running deep-seek or OpenCode models locally requires significant VRAM. Attempting to run this on the same machine you are actively using for heavy virtualization or exploitation creates resource starvation. 
+```powershell
+# Set API to listen on all interfaces
+[Environment]::SetEnvironmentVariable("OLLAMA_HOST", "0.0.0.0", "Machine")
 
-The solution is a Controller/Agent split:
-1. **The Inference Server:** A dedicated Windows host (Dell Inspiron 16+) running Ollama. This handles the raw compute and exposes a local API bound to the internal network.
-2. **The Controller:** My primary Parrot OS bare-metal machine. This acts as the command center, keeping the heavy lifting entirely off the penetration testing environment.
+# Hardening: Limit ingress traffic to the Controller's static IP
+New-NetFirewallRule -DisplayName "Jericho Ollama API" `
+    -Direction Inbound `
+    -RemoteAddress 192.168.1.10 `
+    -LocalPort 11434 `
+    -Protocol TCP `
+    -Action Allow
+3. Infrastructure: The Controller Bridge
+The bridge allows the Parrot OS terminal to act as a client. It intercepts stdin, allowing for seamless integration with standard tools like nmap or grep.
 
-## The API Bridge
-To make this usable in the middle of an assessment, I built a CLI bridge in Python that allows my Parrot OS terminal to pipe standard output directly to the local Ollama API.
+Repo Reference: jericho/ai-inference/scripts/parrot_agent.py
 
-[code:python]
-# Excerpt from jericho/ai-inference/scripts/parrot_agent.py
+Python
+#!/usr/bin/env python3
+import requests, sys, json
 
-def stream_response(prompt, model, system_prompt=None):
-    url = f"http://192.168.1.50:11434/api/generate"
-    
-    payload = {
-        "model": model,
-        "prompt": prompt,
-        "stream": True
-    }
-    
+OLLAMA_HOST = "[http://192.168.1.50:11434/api/generate](http://192.168.1.50:11434/api/generate)"
+
+def stream_response(data, model="deepseek-coder"):
     try:
-        response = requests.post(url, json=payload, stream=True, timeout=30)
-        # ... standard output piping logic ...
-[/code]
+        response = requests.post(
+            OLLAMA_HOST,
+            json={"model": model, "prompt": f"Analyze: {data}", "stream": True},
+            stream=True, timeout=60
+        )
+        response.raise_for_status()
+        for line in response.iter_lines():
+            if line:
+                chunk = json.loads(line).get("response", "")
+                sys.stdout.write(chunk); sys.stdout.flush()
+    except Exception as e:
+        print(f"\n[-] Bridge Error: {e}", file=sys.stderr)
+        sys.exit(1)
 
-This setup allows me to pipe web application logs or raw network captures directly into the local AI for analysis without ever leaving the terminal. By isolating the compute from the attack surface, we maintain absolute data privacy while gaining the benefits of an AI co-pilot directly in the offensive terminal.
+if __name__ == "__main__":
+    stream_response(sys.stdin.read())
+4. Operational Deployment
+This setup allows you to integrate AI analysis into your existing toolchain without intermediate file creation:
+
+Bash
+# Example: Pipe binary analysis directly to the agent
+cat target_payload.bin | ./parrot_agent.py -m deepseek-coder
+Note: Monitor system thermal states during heavy inference loads. Ensure the Dell Inspiron has adequate airflow during long-running analysis of large datasets.
