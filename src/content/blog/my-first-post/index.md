@@ -3,7 +3,8 @@ slug: my-first-post
 title: "My First Post"
 date: "2024-01-01"
 description: "Hello world. The beginning of my security research journey and what to expect from this blog."
-tags: ["Opinion"]
+category: notes
+tags: ["Personal", "Opinion"]
 ---
 
 Hello world.

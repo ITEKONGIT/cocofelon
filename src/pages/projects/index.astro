@@ -1,292 +1,55 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PageShell from '../../components/system/PageShell.astro';
+import { ArrowUpRight, GitBranch } from '@lucide/astro';
+import { projects } from '../../data/projects';
 ---
 
 <Layout>
-  <div class="page">
+  <PageShell class="projects-shell">
     <header class="page-header">
-      <p class="page-tag">ACTIVE ARSENAL</p>
-      <h1 class="page-title">Projects</h1>
-      <p class="page-sub">Tools and research that push boundaries</p>
+      <p class="eyebrow">ITEKONGIT / projects</p>
+      <h1>Projects I built and keep close.</h1>
+      <p class="intro">No filler catalogue. These are the repositories I want attached to my name right now.</p>
+      <a class="github-link" href="https://github.com/ITEKONGIT" target="_blank" rel="noopener">
+        <GitBranch size={17} stroke-width={1.8} aria-hidden="true" />
+        Open GitHub profile
+        <ArrowUpRight size={15} stroke-width={1.8} aria-hidden="true" />
+      </a>
     </header>
 
-    <div class="data-rows">
-      
-      <!-- 01 · Beulah Intrusion -->
-      <div class="data-row featured">
-        <div class="data-row-content">
-          <div class="data-row-header">
-            <span class="data-row-num">01</span>
-            <h3 class="data-row-title">Beulah Intrusion</h3>
-            <span class="data-row-badge">FEATURED</span>
-          </div>
-          <p class="data-row-desc">
-            Advanced malware project achieving Windows Defender bypass through custom shellcode loading
-            and evasion techniques. Explores syscall mechanics, memory manipulation, and behavioral
-            detection evasion. Private repository with research in the Sneaky Shellcode blog.
-          </p>
-          <div class="data-row-tags">
-            <span>C++</span><span>WINDOWS API</span><span>SHELLCODE</span><span>EDR EVASION</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 02 · AI-Powered SAST Machine -->
-      <div class="data-row featured">
-        <div class="data-row-content">
-          <div class="data-row-header">
-            <span class="data-row-num">02</span>
-            <h3 class="data-row-title">AI-Powered SAST Machine</h3>
-            <span class="data-row-badge">FEATURED</span>
-          </div>
-          <p class="data-row-desc">
-            Locally-hosted AI-driven static analysis security testing engine. Model-agnostic design
-            for future-proofing, structured machine-readable output, and integration with existing
-            CI/CD pipelines. Focuses on reasoning about code behavior, not just pattern matching.
-          </p>
-          <div class="data-row-tags">
-            <span>PYTHON</span><span>LLM INTEGRATION</span><span>SAST</span><span>CI/CD</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 03 · Hunting Eye -->
-      <div class="data-row">
-        <div class="data-row-content">
-          <div class="data-row-header">
-            <span class="data-row-num">03</span>
-            <h3 class="data-row-title">Hunting Eye</h3>
-          </div>
-          <p class="data-row-desc">
-            ML-powered malware implementing advanced attack techniques including process hollowing,
-            credential harvesting, and persistence mechanisms. Research-focused exploration of
-            modern threat capabilities.
-          </p>
-          <div class="data-row-tags">
-            <span>PYTHON</span><span>ML</span><span>WINDOWS</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 04 · Campaign Control Center -->
-      <div class="data-row">
-        <div class="data-row-content">
-          <div class="data-row-header">
-            <span class="data-row-num">04</span>
-            <h3 class="data-row-title">Campaign Control Center</h3>
-          </div>
-          <p class="data-row-desc">
-            Full-featured phishing simulation platform for red team operations. Includes campaign
-            management, email templating, landing page creation, and detailed analytics for
-            social engineering assessments.
-          </p>
-          <div class="data-row-tags">
-            <span>PYTHON</span><span>FLASK</span><span>PHISHING</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 05 · APK Signing Utility -->
-      <div class="data-row">
-        <div class="data-row-content">
-          <div class="data-row-header">
-            <span class="data-row-num">05</span>
-            <h3 class="data-row-title">APK Signing Utility</h3>
-          </div>
-          <p class="data-row-desc">
-            Open-source tool for APK signing and unbundling operations. Streamlines mobile
-            security testing workflows with automated certificate handling and app manipulation.
-          </p>
-          <div class="data-row-tags">
-            <span>PYTHON</span><span>ANDROID</span><span>OPEN SOURCE</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 06 · ShellVault -->
-      <div class="data-row">
-        <div class="data-row-content">
-          <div class="data-row-header">
-            <span class="data-row-num">06</span>
-            <h3 class="data-row-title">ShellVault</h3>
-          </div>
-          <p class="data-row-desc">
-            A modal system for managing server access without remembering passwords. Uses a 
-            self-owned three-way handshake encryption system — authenticate once, and the vault 
-            handles the rest. Built for operators who manage multiple environments and refuse 
-            to reuse credentials.
-          </p>
-          <div class="data-row-tags">
-            <span>ENCRYPTION</span><span>AUTHENTICATION</span><span>SERVER MGMT</span><span>TOOLING</span>
-          </div>
-        </div>
-      </div>
-
+    <div class="project-list">
+      {projects.map((project, index) => (
+        <a class="project-row" href={project.href} target="_blank" rel="noopener">
+          <span class="project-index">0{index + 1}</span>
+          <span class="project-main">
+            <span class="project-name">{project.name}</span>
+            <span class="project-description">{project.description}</span>
+            <span class="project-note">{project.note}</span>
+          </span>
+          <span class="project-meta">{project.language}<ArrowUpRight size={17} stroke-width={1.8} aria-hidden="true" /></span>
+        </a>
+      ))}
     </div>
-  </div>
+  </PageShell>
 </Layout>
 
 <style>
-  .page {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 7rem 2rem 4rem;
-    position: relative;
-    z-index: 10;
-  }
-
-  .page-header {
-    margin-bottom: 3rem;
-  }
-
-  .page-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    text-transform: uppercase;
-    letter-spacing: 0.35em;
-    color: var(--cyan);
-    margin-bottom: 1rem;
-  }
-
-  .page-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    margin-bottom: 0.5rem;
-    color: var(--stardust);
-  }
-
-  .page-sub {
-    font-family: 'Lexend', sans-serif;
-    font-size: 0.95rem;
-    color: var(--ash);
-    font-weight: 300;
-  }
-
-  .data-rows {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .data-row {
-    padding: 1.75rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    transition: background 0.3s ease, border-color 0.3s ease;
-  }
-
-  .data-row:first-child {
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
-  }
-
-  .data-row:hover {
-    background: rgba(0, 240, 255, 0.015);
-    border-bottom-color: rgba(0, 240, 255, 0.1);
-  }
-
-  .data-row.featured {
-    background: linear-gradient(90deg, rgba(0, 240, 255, 0.02) 0%, transparent 100%);
-    padding: 1.75rem;
-  }
-
-  .data-row-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .data-row-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .data-row-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--cyan);
-    opacity: 0.5;
-    flex-shrink: 0;
-  }
-
-  .data-row-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--stardust);
-    transition: color 0.3s;
-  }
-
-  .data-row:hover .data-row-title {
-    color: var(--cyan);
-  }
-
-  .data-row-badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.55rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--cyan);
-    border: 1px solid rgba(0, 240, 255, 0.2);
-    padding: 0.15rem 0.5rem;
-  }
-
-  .data-row-desc {
-    font-family: 'Lexend', sans-serif;
-    font-size: 0.9rem;
-    color: var(--ash);
-    font-weight: 300;
-    line-height: 1.7;
-    max-width: 650px;
-    margin-left: 1.75rem;
-  }
-
-  .data-row-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.25rem;
-    margin-left: 1.75rem;
-  }
-
-  .data-row-tags span {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--ash);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 0.2rem 0.5rem;
-  }
-
-  @media (max-width: 768px) {
-    .page {
-      padding: 5rem 1.25rem 3rem;
-    }
-    .data-row-title {
-      font-size: 1.25rem;
-    }
-    .data-row-desc {
-      margin-left: 0;
-    }
-    .data-row-tags {
-      margin-left: 0;
-    }
-  }
+  .projects-shell { max-width: 900px; }
+  .page-header { max-width: 690px; padding: 1.5rem 0 3.5rem; }
+  .eyebrow { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; }
+  h1 { margin-top: 0.8rem; color: var(--text); font-size: clamp(2.25rem, 10vw, 5rem); line-height: 1; letter-spacing: 0; }
+  .intro { max-width: 560px; margin-top: 1rem; color: var(--text-muted); font-size: 0.98rem; font-weight: 300; line-height: 1.8; }
+  .github-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.4rem; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .github-link:hover { color: var(--accent-strong); }
+  .project-list { border-top: 1px solid var(--border-muted); }
+  .project-row { display: grid; grid-template-columns: 2rem 1fr auto; gap: 0.8rem; align-items: start; padding: 1.05rem 0; border-bottom: 1px solid var(--border-muted); transition: padding 0.2s ease, border-color 0.2s ease; }
+  .project-row:hover { padding-left: 0.35rem; border-color: var(--accent-border); }
+  .project-index, .project-meta { color: var(--text-faint); font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; }
+  .project-main { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+  .project-name { color: var(--text); font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
+  .project-description, .project-note { color: var(--text-muted); font-size: 0.8rem; line-height: 1.5; }
+  .project-note { color: var(--text-faint); }
+  .project-meta { display: flex; align-items: center; gap: 0.45rem; color: var(--accent); }
+  @media (min-width: 860px) { .page-header { padding-top: 4rem; padding-bottom: 5rem; } .project-row { grid-template-columns: 3rem 1fr auto; padding: 1.3rem 0; } }
 </style>
-
-<script>
-  import gsap from 'gsap';
-
-  const rows = document.querySelectorAll('.data-row');
-
-  gsap.fromTo('.page-header',
-    { opacity: 0, filter: 'blur(6px)', y: 14 },
-    { opacity: 1, filter: 'blur(0px)', y: 0, duration: 1.2, ease: 'expo.out', delay: 0.2 }
-  );
-
-  gsap.fromTo(rows,
-    { opacity: 0, filter: 'blur(8px)', y: 20 },
-    { opacity: 1, filter: 'blur(0px)', y: 0, duration: 0.8, stagger: 0.08, ease: 'expo.out', delay: 0.5 }
-  );
-</script>

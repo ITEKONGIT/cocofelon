@@ -1,153 +1,31 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PageShell from '../../components/system/PageShell.astro';
+import Badge from '../../components/system/Badge.astro';
 ---
 
 <Layout>
-  <div class="page">
-    <header class="page-header">
-      <p class="page-tag">SIGNAL INVENTORY</p>
-      <h1 class="page-title">Capabilities</h1>
-      <p class="page-sub">Active exploitation domains. Subversion engineering. Systems compromise.</p>
-    </header>
-
-    <div class="skills-grid">
-      <div class="skill-block">
-        <h3 class="skill-title">ADVERSARIAL OPERATIONS & MALWARE</h3>
-        <ul class="skill-list">
-          <li>Advanced Threat Emulation & Red Teaming</li>
-          <li>Evasion Engineering & Payload Development (C/C++)</li>
-          <li>Memory Manipulation & Direct Syscall Subversion</li>
-          <li>Infrastructure Breach & Lateral Movement</li>
-        </ul>
-      </div>
-
-      <div class="skill-block">
-        <h3 class="skill-title">CLOUD IDENTITY & INFRASTRUCTURE COMPROMISE</h3>
-        <ul class="skill-list">
-          <li>AWS/Azure IAM Privilege Escalation</li>
-          <li>Metadata Extraction & SSRF Weaponization</li>
-          <li>Container Escape & Kubernetes Subversion</li>
-          <li>Infrastructure-as-Code (IaC) Poisoning</li>
-        </ul>
-      </div>
-
-      <div class="skill-block">
-        <h3 class="skill-title">BESPOKE WEAPONIZATION & AUTOMATION</h3>
-        <ul class="skill-list">
-          <li>Low-Level Systems Engineering (C/C++)</li>
-          <li>Offensive AI & SAST Automation (Python)</li>
-          <li>Living-off-the-Land (LotL) Scripting (Bash/PS)</li>
-          <li>Custom Threat Emulation Tooling</li>
-        </ul>
-      </div>
-
-      <div class="skill-block">
-        <h3 class="skill-title">APPLICATION LOGIC SUBVERSION</h3>
-        <ul class="skill-list">
-          <li>REST/GraphQL API Weaponization</li>
-          <li>Cryptographic & Authentication Bypass</li>
-          <li>Complex IDOR & State Manipulation</li>
-          <li>Mobile Reverse Engineering & Unbundling</li>
-        </ul>
-      </div>
+  <PageShell class="capabilities-shell">
+    <header class="page-header"><Badge tone="accent">Capabilities</Badge><h1>Engineering depth with a security habit.</h1><p class="intro">The useful version of my skill set is not a list of impressive words. It is the ability to move from a financial workflow or application boundary down to the code, identity, and state that make it work.</p></header>
+    <div class="capability-list">
+      <article><span class="number">01</span><div><h2>Software and systems</h2><p>Python, TypeScript, C++, APIs, automation, local tooling, system behavior, and the engineering decisions that make software maintainable.</p></div></article>
+      <article><span class="number">02</span><div><h2>Application security</h2><p>Authentication, authorization, business logic, API abuse paths, state manipulation, IDOR, SSRF, and the gaps that appear between features.</p></div></article>
+      <article><span class="number">03</span><div><h2>Fintech and finance systems</h2><p>Transactions, account state, limits, ledgers, roles, sessions, and the trust boundaries that matter when software handles money.</p></div></article>
+      <article><span class="number">04</span><div><h2>Offensive research</h2><p>Windows internals, C/C++ research, malware analysis, evasion concepts, cloud identity, and controlled exploit development for authorized work.</p></div></article>
+      <article><span class="number">05</span><div><h2>Writing and mentorship</h2><p>Turning technical findings into clear notes, useful remediation, and practical learning for engineers who want to understand the system beneath the tool.</p></div></article>
     </div>
-  </div>
+  </PageShell>
 </Layout>
 
 <style>
-  .page {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 7rem 2rem 4rem;
-    position: relative;
-    z-index: 10;
-  }
-
-  .page-header {
-    margin-bottom: 3rem;
-  }
-
-  .page-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    text-transform: uppercase;
-    letter-spacing: 0.35em;
-    color: var(--cyan);
-    margin-bottom: 1rem;
-  }
-
-  .page-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    margin-bottom: 0.5rem;
-    color: var(--stardust);
-  }
-
-  .page-sub {
-    font-family: 'Lexend', sans-serif;
-    font-size: 0.95rem;
-    color: var(--ash);
-    font-weight: 300;
-  }
-
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-  }
-
-  .skill-block {
-    padding: 1.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: border-color 0.3s ease;
-  }
-
-  .skill-block:hover {
-    border-color: rgba(0, 240, 255, 0.12);
-  }
-
-  .skill-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--cyan);
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .skill-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .skill-list li {
-    font-family: 'Lexend', sans-serif;
-    font-size: 0.9rem;
-    color: var(--ash);
-    font-weight: 300;
-    padding-left: 0.75rem;
-    border-left: 1px solid rgba(0, 240, 255, 0.15);
-    transition: border-color 0.3s, color 0.3s;
-  }
-
-  .skill-list li:hover {
-    border-left-color: var(--cyan);
-    color: var(--stardust);
-  }
-
-  @media (max-width: 768px) {
-    .page {
-      padding: 5rem 1.25rem 3rem;
-    }
-    .skills-grid {
-      grid-template-columns: 1fr;
-      gap: 1.25rem;
-    }
-  }
+  .capabilities-shell { max-width: 980px; }
+  .page-header { max-width: 780px; padding: 1.5rem 0 3rem; }
+  h1 { margin-top: 1rem; color: var(--text); font-size: clamp(2.3rem, 10vw, 5rem); line-height: 1; letter-spacing: 0; }
+  .intro, article p { margin-top: 1rem; color: var(--text-muted); font-size: 0.96rem; font-weight: 300; line-height: 1.8; }
+  .capability-list { border-top: 1px solid var(--border-muted); }
+  article { display: grid; grid-template-columns: 2rem 1fr; gap: 0.8rem; padding: 1.25rem 0 1.5rem; border-bottom: 1px solid var(--border-muted); }
+  .number { color: var(--accent); font: 0.6rem 'JetBrains Mono', monospace; }
+  h2 { color: var(--text); font-size: 1.2rem; line-height: 1.2; letter-spacing: 0; }
+  article p { max-width: 680px; font-size: 0.88rem; }
+  @media (min-width: 700px) { .page-header { padding-top: 4rem; padding-bottom: 5rem; } article { grid-template-columns: 150px minmax(0, 680px); gap: 2rem; padding: 1.5rem 0 2rem; } }
 </style>

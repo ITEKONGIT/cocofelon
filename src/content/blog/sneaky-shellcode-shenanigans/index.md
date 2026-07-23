@@ -3,7 +3,8 @@ slug: sneaky-shellcode-shenanigans
 title: "Sneaky Shellcode Shenanigans: Windows Defender-Dodging Loader"
 date: "2025-03-09"
 description: "Deep dive into fileless shellcode loader evasion — API hashing, encrypted payloads, and direct syscalls. The research behind Beulah Intrusion."
-tags: ["Recon & Malware"]
+category: security
+tags: ["C++", "Windows", "Malware Research", "Detection"]
 ---
 
 **Overview:** A deep technical breakdown of a fileless shellcode loader that bypasses Windows Defender through API hashing, encrypted payloads, and direct syscalls. This is the research behind my Beulah Intrusion project.

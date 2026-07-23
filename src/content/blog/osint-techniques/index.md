@@ -3,7 +3,8 @@ slug: osint-techniques
 title: "OSINT Techniques for Web, API, Cloud, and Mobile"
 date: "2025-02-20"
 description: "Practical OSINT methodology across four penetration testing domains. Focus on actionable techniques that convert passive reconnaissance into valid attack vectors."
-tags: ["Recon & Malware"]
+category: security
+tags: ["Reconnaissance", "Web", "API", "Cloud", "Mobile"]
 ---
 
 **Overview:** Practical OSINT methodology across four penetration testing domains. Focus on actionable techniques that convert passive reconnaissance into valid attack vectors.

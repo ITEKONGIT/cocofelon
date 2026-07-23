@@ -3,7 +3,8 @@ slug: api-hacking-course
 title: "I Took a Hacking Course So I Decided to Hack"
 date: "2025-03-15"
 description: "APISEC UNI course review and VAPI hacking walkthrough — exploiting OWASP Top 10 API vulnerabilities from BOLA to SQL injection."
-tags: ["API Security"]
+category: security
+tags: ["API Security", "Application Security", "Labs"]
 ---
 
 **TL;DR:** Completed the APIsec University course, then immediately applied it to VAPI — a vulnerable API lab. Here's my walkthrough of exploiting OWASP Top 10 API vulnerabilities.

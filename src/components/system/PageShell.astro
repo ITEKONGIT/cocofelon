@@ -1,0 +1,37 @@
+---
+export interface Props {
+  size?: 'compact' | 'wide';
+  class?: string;
+}
+
+const { size = 'wide', class: className = '' } = Astro.props;
+---
+
+<main class:list={['page-shell', `page-shell-${size}`, className]}>
+  <slot />
+</main>
+
+<style>
+  .page-shell {
+    position: relative;
+    z-index: 10;
+    width: min(100% - 1.5rem, 1120px);
+    margin: 0 auto;
+    padding: 5.25rem 0 3rem;
+  }
+
+  .page-shell-compact {
+    width: min(100% - 1.5rem, 840px);
+  }
+
+  @media (min-width: 760px) {
+    .page-shell {
+      width: min(100% - 2rem, 1120px);
+      padding: 6.5rem 0 4rem;
+    }
+
+    .page-shell-compact {
+      width: min(100% - 2rem, 840px);
+    }
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+import { ArrowUpRight } from '@lucide/astro';
+
+export interface Props {
+  href: string;
+  variant?: 'primary' | 'secondary';
+}
+
+const { href, variant = 'secondary' } = Astro.props;
+---
+
+<a href={href} class:list={['action-link', `action-link-${variant}`]}>
+  <span><slot /></span>
+  <ArrowUpRight size={15} stroke-width={1.8} aria-hidden="true" />
+</a>
+
+<style>
+  .action-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 2.75rem;
+    width: 100%;
+    padding: 0.78rem 1rem;
+    border: 1px solid var(--border-muted);
+    background: rgba(255, 255, 255, 0.025);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  }
+
+  .action-link-primary {
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+  }
+
+  .action-link:hover {
+    border-color: var(--accent-border);
+    color: var(--accent-strong);
+    transform: translateY(-1px);
+  }
+
+  @media (min-width: 560px) {
+    .action-link {
+      width: auto;
+    }
+  }
+</style>

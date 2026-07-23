@@ -5,7 +5,7 @@
       <a href="https://github.com/ITEKONGIT" target="_blank" rel="noopener">GitHub</a>
       <a href="mailto:hello@cocofelon.lol">hello@cocofelon.lol</a>
     </div>
-    <p class="footer-credit">Built with precision · cocofelon.lol</p>
+    <p class="footer-credit">Emmanuel Awe / COCOFELON</p>
   </div>
 </footer>
 
@@ -13,7 +13,7 @@
   .footer {
     border-top: 1px solid rgba(255, 255, 255, 0.04);
     padding: 2.5rem 2rem;
-    max-width: 1200px;
+    width: min(100% - 1.5rem, 1120px);
     margin: 0 auto;
   }
 
@@ -35,7 +35,9 @@
 
   .footer-links {
     display: flex;
-    gap: 2rem;
+    gap: 1rem 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
   }
 
@@ -43,7 +45,7 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.6rem;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.1em;
     color: var(--ash);
     text-decoration: none;
     transition: color 0.3s;

@@ -1,7 +1,11 @@
 ---
 title: "How I Broke Into The Bank's API"
-date: undefined
+date: "2025-10-15"
 slug: how-i-broke-into-the-bank-s-api
+description: "Draft notes for a redacted banking API authorization case study. Placeholder code and images need cleanup before publication."
+category: fintech
+tags: ["API Security", "Fintech", "Authorization"]
+status: draft
 series: "Bank Hacks"
 part: 2
 difficulty: "Advanced"

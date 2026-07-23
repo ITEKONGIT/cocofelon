@@ -2,7 +2,7 @@ import { parse } from './parse.js';
 import { processImages } from './images.js';
 import { updateSeries } from './series.js';
 import { writePost } from './output.js';
-import { readdirSync, readFileSync, unlinkSync } from 'fs';
+import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 async function runPipeline() {
@@ -16,7 +16,7 @@ async function runPipeline() {
         
         try {
             // 1. Parse
-            const parsed = await parse(rawContent);
+            const parsed = await parse(rawContent, { sourceName: file });
             
             // 2. Write to project structure
             const result = writePost(parsed);

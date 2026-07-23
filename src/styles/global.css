@@ -1,16 +1,33 @@
-/* === COCOFELON — Astral Projection Global Styles === */
+/* === COCOFELON — Research Lab Global Styles === */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 
 :root {
-  --void: #030305;
-  --stardust: #E2E8F0;
-  --cyan: #00F0FF;
-  --nebula: #4B0082;
-  --ash: #8892b0;
+  --bg: #050608;
+  --bg-elevated: #080c11;
+  --surface: rgba(11, 15, 20, 0.72);
+  --surface-strong: rgba(17, 23, 32, 0.86);
+  --surface-soft: rgba(255, 255, 255, 0.025);
+  --text: #e6edf3;
+  --text-muted: #9aa7b2;
+  --text-faint: #66727f;
+  --accent: #00d8e8;
+  --accent-strong: #5ef4ff;
+  --accent-soft: rgba(0, 216, 232, 0.1);
+  --accent-border: rgba(0, 216, 232, 0.24);
+  --nebula: #6f5cff;
+  --danger: #ff5c7a;
   --border: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(0, 240, 255, 0.15);
+  --border-muted: rgba(255, 255, 255, 0.05);
+  --shadow-soft: 0 16px 48px rgba(0, 0, 0, 0.28);
+
+  /* Legacy aliases kept while the older page CSS is migrated. */
+  --void: var(--bg);
+  --stardust: var(--text);
+  --cyan: var(--accent);
+  --ash: var(--text-muted);
+  --border-glow: var(--accent-border);
 }
 
 *,
@@ -28,12 +45,14 @@ html {
 }
 
 body {
-  background-color: var(--void);
-  color: var(--stardust);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(0, 216, 232, 0.06), transparent 34rem),
+    linear-gradient(180deg, #050608 0%, #050608 45%, #07090d 100%);
+  color: var(--text);
   font-family: 'Lexend', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   overflow-x: hidden;
-  cursor: none;
+  cursor: auto;
 }
 
 /* === Custom Cursor === */
@@ -46,6 +65,7 @@ body {
   pointer-events: none;
   z-index: 9999;
   mix-blend-mode: difference;
+  opacity: 0;
 }
 
 .cursor-ring {
@@ -57,19 +77,31 @@ body {
   pointer-events: none;
   z-index: 9998;
   mix-blend-mode: difference;
+  opacity: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body.has-custom-cursor {
+    cursor: none;
+  }
+
+  body.has-custom-cursor .cursor-dot,
+  body.has-custom-cursor .cursor-ring {
+    opacity: 1;
+  }
 }
 
 /* === Selection === */
 ::selection {
-  background: rgba(0, 240, 255, 0.15);
-  color: var(--stardust);
+  background: rgba(0, 216, 232, 0.16);
+  color: var(--text);
 }
 
 /* === Scrollbar === */
 ::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--void); }
+::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); }
-::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.2); }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 216, 232, 0.22); }
 
 /* === Typography === */
 h1, h2, h3, h4, h5, h6 {
@@ -87,12 +119,19 @@ a {
   text-decoration: none;
 }
 
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
 /* === Astral Glass Panel === */
 .astral-panel {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
 }
 
 /* === Button — Astral Glass === */
@@ -103,8 +142,8 @@ a {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: var(--stardust);
-  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  background: var(--surface-soft);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
@@ -112,24 +151,24 @@ a {
 }
 
 .btn:hover {
-  background: rgba(0, 240, 255, 0.06);
-  border-color: rgba(0, 240, 255, 0.3);
-  color: var(--cyan);
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+  color: var(--accent-strong);
 }
 
 .btn-cyan {
-  border-color: rgba(0, 240, 255, 0.2);
-  color: var(--cyan);
+  border-color: var(--accent-border);
+  color: var(--accent);
 }
 
 .btn-cyan:hover {
-  background: rgba(0, 240, 255, 0.08);
-  border-color: rgba(0, 240, 255, 0.5);
+  background: var(--accent-soft);
+  border-color: rgba(0, 216, 232, 0.44);
 }
 
 /* === Astral Glass Card === */
 .astral-card {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -137,12 +176,12 @@ a {
 }
 
 .astral-card:hover {
-  border-color: rgba(0, 240, 255, 0.12);
+  border-color: var(--accent-border);
 }
 
 /* === Utility Classes === */
-.text-cyan { color: var(--cyan); }
-.text-ash { color: var(--ash); }
+.text-cyan { color: var(--accent); }
+.text-ash { color: var(--text-muted); }
 .font-display { font-family: 'Syne', sans-serif; }
 .font-mono { font-family: 'JetBrains Mono', monospace; }
 .font-body { font-family: 'Lexend', sans-serif; }
@@ -260,4 +299,20 @@ a {
 
 .prose .redacted:hover {
   color: var(--stardust);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
 }

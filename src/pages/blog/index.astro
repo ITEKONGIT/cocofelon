@@ -2,24 +2,36 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
-const allPosts = await getCollection('blog');
+const allPosts = await getCollection('blog', ({ data }) => data.status !== 'draft');
 
 // Sort by date descending
 const posts = allPosts.sort((a, b) => {
-  return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+  return new Date(b.data.date || 0).getTime() - new Date(a.data.date || 0).getTime();
 });
 
-// Extract unique tags from all posts that have them
-const tagSet = new Set<string>();
-posts.forEach(p => {
-  if (p.data.tags) {
-    p.data.tags.forEach(t => tagSet.add(t));
-  }
-});
-const tags = [...tagSet].sort();
+const categoryOptions = [
+  { key: 'all', label: 'All writing' },
+  { key: 'security', label: 'Security' },
+  { key: 'engineering', label: 'Engineering' },
+  { key: 'fintech', label: 'Fintech' },
+  { key: 'ai', label: 'AI + tooling' },
+  { key: 'notes', label: 'Notes' },
+];
+
+const categoryLabels: Record<string, string> = {
+  security: 'Security',
+  engineering: 'Engineering',
+  fintech: 'Fintech',
+  ai: 'AI + tooling',
+  notes: 'Notes',
+};
+
+const countFor = (category: string) => category === 'all'
+  ? posts.length
+  : posts.filter((post) => post.data.category === category).length;
 
 // Standardize the archive date format to YYYY-MM-DD
-const formatArchiveDate = (dateInput) => {
+const formatArchiveDate = (dateInput: any) => {
   if (!dateInput) return '—';
   const d = new Date(dateInput);
   if (isNaN(d.getTime())) return String(dateInput);
@@ -30,29 +42,30 @@ const formatArchiveDate = (dateInput) => {
 <Layout>
   <div class="archive">
     <header class="archive-header">
-      <p class="archive-tag">TRANSMISSION ARCHIVE</p>
-      <h1 class="archive-title">THE DOSSIER</h1>
-      <p class="archive-sub">Field reports, technical breakdowns, and research notes from the wire.</p>
+      <p class="archive-tag">Emmanuel Awe / writing</p>
+      <h1 class="archive-title">Notes from the work.</h1>
+      <p class="archive-sub">Security, software, finance systems, and the lessons that only show up after building.</p>
     </header>
 
-    <div class="archive-filters" id="filters">
-      <button class="filter-btn active" data-filter="all">All</button>
-      {tags.map(tag => (
-        <button class="filter-btn" data-filter={tag}>{tag}</button>
+    <div class="archive-filters" id="filters" aria-label="Filter writing by category">
+      {categoryOptions.map((category) => (
+        <button class:list={['filter-btn', category.key === 'all' && 'active']} data-filter={category.key} type="button" aria-pressed={category.key === 'all'}>
+          <span>{category.label}</span><small>{countFor(category.key)}</small>
+        </button>
       ))}
     </div>
 
     <div class="archive-table" id="archive-table">
-      {posts.map((post) => (
+      {posts.map((post: any) => (
         <a
           href={`/blog/${post.data.slug}`}
           class="archive-row"
-          data-category={post.data.tags ? post.data.tags.join(' ') : 'uncategorized'}
+          data-category={[post.data.category, ...(post.data.tags || [])].join('|')}
         >
           <span class="row-date">{formatArchiveDate(post.data.date)}</span>
           <span class="row-title">{post.data.title}</span>
           <span class="row-tags">
-            {post.data.tags ? post.data.tags.join(' · ') : '—'}
+            {[categoryLabels[post.data.category], ...(post.data.tags || [])].join(' · ')}
           </span>
           <span class="row-arrow">→</span>
         </a>
@@ -68,31 +81,31 @@ const formatArchiveDate = (dateInput) => {
 <style>
   .archive {
     min-height: 100vh;
-    max-width: 900px;
+    max-width: 980px;
     margin: 0 auto;
-    padding: 6rem 2rem 4rem;
+    padding: 5.25rem 0.75rem 4rem;
     position: relative;
     z-index: 10;
   }
 
   .archive-header {
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
   }
 
   .archive-tag {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.6rem;
     text-transform: uppercase;
-    letter-spacing: 0.35em;
+    letter-spacing: 0.15em;
     color: var(--cyan);
     margin-bottom: 1rem;
   }
 
   .archive-title {
     font-family: 'Syne', sans-serif;
-    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-size: clamp(2.3rem, 10vw, 5rem);
     font-weight: 800;
-    letter-spacing: -0.03em;
+    letter-spacing: 0;
     margin-bottom: 0.5rem;
     color: var(--stardust);
   }
@@ -102,38 +115,45 @@ const formatArchiveDate = (dateInput) => {
     font-size: 0.95rem;
     color: var(--ash);
     font-weight: 300;
-    max-width: 500px;
+    max-width: 620px;
   }
 
   /* Filters */
   .archive-filters {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.45rem;
     flex-wrap: wrap;
-    margin-bottom: 2.5rem;
-    padding-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    padding: 0.8rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   }
 
   .filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.58rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    padding: 0.35rem 0.85rem;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    color: var(--ash);
+    min-height: 2.35rem;
+    padding: 0.55rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--border-muted);
+    color: var(--text-muted);
     cursor: pointer;
     transition: all 0.3s ease;
   }
 
   .filter-btn.active,
   .filter-btn:hover {
-    border-color: rgba(0, 240, 255, 0.3);
-    color: var(--cyan);
-    background: rgba(0, 240, 255, 0.04);
+    border-color: var(--accent-border);
+    color: var(--accent-strong);
+    background: var(--accent-soft);
   }
+
+  .filter-btn small { color: var(--text-faint); font-size: 0.55rem; letter-spacing: 0; }
+  .filter-btn.active small, .filter-btn:hover small { color: var(--accent-strong); }
 
   /* Table */
   .archive-table {
@@ -143,10 +163,10 @@ const formatArchiveDate = (dateInput) => {
 
   .archive-row {
     display: grid;
-    grid-template-columns: 110px 1fr 200px 30px;
+    grid-template-columns: 110px minmax(0, 1fr) 200px 30px;
     align-items: center;
     gap: 1rem;
-    padding: 1rem 0;
+    padding: 1.15rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     text-decoration: none;
     transition: background 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
@@ -160,16 +180,16 @@ const formatArchiveDate = (dateInput) => {
   .row-date {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.62rem;
-    color: var(--cyan);
+    color: var(--accent);
     letter-spacing: 0.08em;
     opacity: 0.7;
   }
 
   .row-title {
     font-family: 'Syne', sans-serif;
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: var(--stardust);
+    color: var(--text);
     transition: color 0.3s ease;
     letter-spacing: -0.01em;
   }
@@ -181,7 +201,7 @@ const formatArchiveDate = (dateInput) => {
   .row-tags {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.55rem;
-    color: var(--ash);
+    color: var(--text-muted);
     letter-spacing: 0.1em;
     opacity: 0.5;
   }
@@ -189,13 +209,13 @@ const formatArchiveDate = (dateInput) => {
   .row-arrow {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.15);
+    color: var(--text-faint);
     text-align: right;
     transition: all 0.3s ease;
   }
 
   .archive-row:hover .row-arrow {
-    color: var(--cyan);
+    color: var(--accent);
     transform: translateX(4px);
   }
 
@@ -210,7 +230,7 @@ const formatArchiveDate = (dateInput) => {
 
   @media (max-width: 768px) {
     .archive {
-      padding: 4rem 1.25rem 3rem;
+      padding: 5.25rem 0.75rem 3rem;
     }
 
     .archive-row {
@@ -239,16 +259,17 @@ const formatArchiveDate = (dateInput) => {
 
   filterButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      const filter = btn.dataset.filter;
+      const filter = (btn as HTMLElement).dataset.filter;
 
       filterButtons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      filterButtons.forEach((button) => button.setAttribute('aria-pressed', String(button === btn)));
 
       let visibleCount = 0;
 
       rows.forEach(row => {
-        const categories = row.dataset.category || '';
-        const isMatch = filter === 'all' || categories.split(' ').includes(filter);
+        const categories = (row as HTMLElement).dataset.category || '';
+        const isMatch = filter === 'all' || categories.split('|').includes(filter || '');
 
         if (isMatch) {
           visibleCount++;
@@ -257,7 +278,7 @@ const formatArchiveDate = (dateInput) => {
             height: 'auto',
             duration: 0.35,
             ease: 'power2.out',
-            onStart: () => { row.style.display = 'grid'; }
+            onStart: () => { (row as HTMLElement).style.display = 'grid'; }
           });
         } else {
           gsap.to(row, {
@@ -268,15 +289,15 @@ const formatArchiveDate = (dateInput) => {
             borderBottomWidth: 0,
             duration: 0.25,
             ease: 'power2.in',
-            onComplete: () => { row.style.display = 'none'; }
+            onComplete: () => { (row as HTMLElement).style.display = 'none'; }
           });
         }
       });
 
       // Show/hide empty state
-      if (visibleCount === 0) {
+      if (visibleCount === 0 && empty) {
         gsap.to(empty, { opacity: 1, display: 'block', duration: 0.3 });
-      } else {
+      } else if (empty) {
         gsap.to(empty, { opacity: 0, display: 'none', duration: 0.2 });
       }
     });

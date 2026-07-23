@@ -3,7 +3,8 @@ slug: apis-friend-or-foe
 title: "APIs: Friend or Foe"
 date: "2025-04-10"
 description: "Exploring the dual nature of APIs — from seamless data exchange to potential weaponization. Windows API manipulation, DLL injection, and API hooking."
-tags: ["API Security"]
+category: security
+tags: ["API Security", "Windows", "C++"]
 ---
 
 This is probably going to be a beginner series into what I'm delving into as a person, and it's more around APIs for now. APIs (Application Programming Interfaces) play a huge role in our daily lifestyle, from day-to-day tasks on PCs to small tasks on websites.

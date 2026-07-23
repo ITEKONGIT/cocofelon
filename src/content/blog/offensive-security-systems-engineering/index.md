@@ -3,7 +3,8 @@ slug: offensive-security-systems-engineering
 title: "Offensive Security as Systems Engineering"
 date: "2024-12-15"
 description: "A manifesto about approaching offensive security as systems engineering — depth over breadth, fundamentals over buzzwords, execution over theory."
-tags: ["Opinion"]
+category: engineering
+tags: ["Security Engineering", "Systems", "Methodology"]
 ---
 
 I'm not interested in what breaks in isolation.

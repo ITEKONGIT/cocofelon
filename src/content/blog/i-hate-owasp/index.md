@@ -3,7 +3,8 @@ slug: i-hate-owasp
 title: "I HATE OWASP"
 date: "2026-06-22"
 description: "A hot take on why the OWASP Top 10 is outdated and why we need to rethink how we teach vulnerability research."
-tags: ["Opinion"]
+category: notes
+tags: ["Opinion", "Security Education", "Methodology"]
 ---
 
 ### OWASP TOP 10 IS OUTDATED
