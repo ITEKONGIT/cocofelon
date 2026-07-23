@@ -1,0 +1,17 @@
+Sneaky Shellcode Shenanigans Windows Defender Dodging Loader
+
+Overview
+
+A deep technical breakdown of a fileless shellcode loader that bypasses Windows Defender through API hashing, encrypted payloads, and direct syscalls. This is the research behind my Beulah Intrusion project.
+
+Ethical Use Only — this research is for authorized security testing and education only.
+
+The 5 Layer Evasion Stack
+
+Modern endpoint protection requires modern evasion. This loader implements five complementary techniques:
+
+Layer 1 Fileless execution — Evades signature based AV
+Layer 2 API hashing — Evades import table analysis
+Layer 3 Encrypted HTTPS fetch — Evades network inspection
+Layer 4 AES decryption in memory — Evades static payload analysis
+Layer 5 Direct syscalls — Evades user mode EDR hooks
