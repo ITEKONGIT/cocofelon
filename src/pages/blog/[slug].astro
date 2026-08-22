@@ -208,6 +208,48 @@ const formatDate = (dateInput) => {
     margin-bottom: 1.5rem;
   }
 
+  .prose .article-figure {
+    margin: 2.5rem auto;
+    text-align: center;
+  }
+
+  .prose .article-figure img {
+    display: block;
+    width: min(100%, 720px);
+    max-height: 620px;
+    margin: 0 auto;
+    object-fit: contain;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.28);
+  }
+
+  .prose .article-figure-gif img {
+    width: min(100%, 520px);
+  }
+
+  .prose .article-figure-queue {
+    max-width: 680px;
+    padding: 0.75rem;
+    border: 1px solid rgba(0, 216, 232, 0.18);
+    background: rgba(5, 6, 8, 0.72);
+  }
+
+  .prose .article-figure-queue img {
+    width: 100%;
+    max-height: 470px;
+    object-fit: contain;
+    border: 0;
+  }
+
+  .prose .article-figure figcaption {
+    max-width: 620px;
+    margin: 0.75rem auto 0;
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    line-height: 1.6;
+  }
+
   .prose strong {
     color: var(--stardust);
     font-weight: 600;
